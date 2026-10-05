@@ -22,16 +22,35 @@ import {
   ChevronLeft,
   ChevronRight,
   CalendarDays,
-  Phone,
   MessageCircle,
-  ShieldCheck,
   Sparkles,
   Check,
 } from "lucide-react";
 
-function ratingDisplay(r: number | null) {
-  if (!r) return "Nouveau";
-  return (r / 10).toFixed(1);
+function ratingDisplay(
+  rating: number | null,
+  reviewsCount: number | null
+) {
+  if (!rating || !reviewsCount) return "Nouveau";
+  return (rating / 10).toFixed(1);
+}
+
+function propertyPriceText(p: PropertyDTO) {
+  if (p.pricePerNight && p.pricePerMonth) {
+    return `${formatFCFA(p.pricePerNight)} / nuit · ${formatFCFA(
+      p.pricePerMonth
+    )} / mois`;
+  }
+
+  if (p.pricePerNight) {
+    return `${formatFCFA(p.pricePerNight)} / nuit`;
+  }
+
+  if (p.pricePerMonth) {
+    return `${formatFCFA(p.pricePerMonth)} / mois`;
+  }
+
+  return "Tarif à confirmer";
 }
 
 export function Catalog({ initial }: { initial: PropertyDTO[] }) {
@@ -52,9 +71,17 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
       try {
         const params = new URLSearchParams();
 
-        if (type !== "all") params.set("type", type);
-        if (quartier !== "all") params.set("quartier", quartier);
-        if (stay !== "all") params.set("stay", stay);
+        if (type !== "all") {
+          params.set("type", type);
+        }
+
+        if (quartier !== "all") {
+          params.set("quartier", quartier);
+        }
+
+        if (stay !== "all") {
+          params.set("stay", stay);
+        }
 
         const effectiveBudget =
           budget === "custom"
@@ -65,17 +92,25 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
           params.set("maxBudget", effectiveBudget);
         }
 
-        if (query.trim()) params.set("q", query.trim());
+        if (query.trim()) {
+          params.set("q", query.trim());
+        }
 
         const res = await fetch(
           `/api/properties?${params.toString()}`
         );
+
+        if (!res.ok) {
+          throw new Error("Erreur lors du chargement des logements.");
+        }
 
         const data = await res.json();
 
         if (data.properties) {
           setItems(data.properties);
         }
+      } catch (error) {
+        console.error("Erreur catalogue :", error);
       } finally {
         setLoading(false);
       }
@@ -85,7 +120,6 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
   }, [type, quartier, stay, budget, customBudget, query]);
 
   const count = items.length;
-
   const isCustomBudget = budget === "custom";
 
   const courtBudgetOptions = [
@@ -139,18 +173,17 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
         <div>
           <p className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 border border-teal-100 px-3.5 py-1.5 text-[13px] font-bold text-[#006b75]">
             <Sparkles size={15} />
-            Catalogue vérifié · Photos réelles · Dispo 7j/7
+            Annonces examinées avant publication
           </p>
 
           <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.6rem)] font-extrabold tracking-tight text-[#0a3f44] leading-tight">
-            Nos logements disponibles à Dakar
+            Logements proposés à Dakar
           </h2>
 
           <p className="mt-2 max-w-2xl text-[15px] text-slate-600 leading-relaxed">
-            Court séjour type Airbnb dès{" "}
-            <strong>12 000 FCFA/nuit</strong> et location longue
-            durée avec bail. Tous nos logements sont visités,
-            nettoyés et sécurisés avant chaque arrivée.
+            Consultez les logements proposés pour un court ou un long séjour.
+            Les informations affichées correspondent aux éléments transmis et
+            examinés avant publication.
           </p>
         </div>
 
@@ -239,10 +272,7 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
                 </option>
 
                 {currentBudgetOptions.map((option) => (
-                  <option
-                    key={option.value}
-                    value={option.value}
-                  >
+                  <option key={option.value} value={option.value}>
                     {option.label}
                   </option>
                 ))}
@@ -259,9 +289,7 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
           <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-2.5">
             <label className="text-[13px] font-bold text-slate-600">
               Budget maximum{" "}
-              {stay === "court"
-                ? "par nuit"
-                : "par mois"}
+              {stay === "court" ? "par nuit" : "par mois"}
             </label>
 
             <div className="flex items-center gap-2 rounded-2xl bg-slate-50 border px-4 py-2.5 max-w-xs focus-within:border-[#006b75] focus-within:bg-white transition">
@@ -275,16 +303,13 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
                   )
                 }
                 placeholder={
-                  stay === "court"
-                    ? "Ex. 12000"
-                    : "Ex. 85000"
+                  stay === "court" ? "Ex. 12000" : "Ex. 85000"
                 }
                 className="w-full bg-transparent outline-none text-[14px] font-semibold"
               />
 
               <span className="text-[13px] font-bold text-slate-500 whitespace-nowrap">
-                FCFA /{" "}
-                {stay === "court" ? "nuit" : "mois"}
+                FCFA / {stay === "court" ? "nuit" : "mois"}
               </span>
             </div>
           </div>
@@ -306,8 +331,13 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
             <button
               key={i}
               onClick={() => {
-                if (f.q) setQuery(f.q);
-                if (f.t) setType(f.t);
+                if (f.q) {
+                  setQuery(f.q);
+                }
+
+                if (f.t) {
+                  setType(f.t);
+                }
               }}
               className="rounded-full border bg-white px-3.5 py-1.5 font-semibold text-slate-700 hover:border-[#006b75] hover:text-[#006b75] transition"
             >
@@ -347,14 +377,13 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
             </p>
 
             <p className="mt-2 text-slate-500">
-              Écrivez-nous sur WhatsApp, nous avons souvent des
-              nouveautés non publiées.
+              Contactez PAVA pour nous communiquer vos critères de recherche.
             </p>
 
             <a
               href={WHATSAPP_LINK(
                 "Bonjour, je cherche un logement avec ces critères : " +
-                  query
+                  (query || "à préciser")
               )}
               target="_blank"
               rel="noreferrer"
@@ -393,6 +422,7 @@ export function PropertyCard({
   onOpen: () => void;
 }) {
   const img = p.images?.[0] || "";
+  const hasReviews = !!p.reviewsCount;
 
   return (
     <article className="group overflow-hidden rounded-3xl bg-white border shadow-[0_10px_35px_rgba(6,46,50,0.07)] hover:shadow-[0_20px_60px_rgba(6,46,50,0.14)] hover:-translate-y-1 transition-all duration-300 flex flex-col">
@@ -408,8 +438,8 @@ export function PropertyCard({
             loading="lazy"
           />
         ) : (
-          <div className="grid h-full place-items-center text-slate-400">
-            PAVA
+          <div className="grid h-full place-items-center text-slate-400 font-semibold">
+            Photos à venir
           </div>
         )}
 
@@ -426,16 +456,22 @@ export function PropertyCard({
         </div>
 
         <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/55 backdrop-blur px-2.5 py-1.5 text-[12px] font-bold text-white">
-          <Star
-            size={13}
-            className="fill-amber-300 text-amber-300"
-          />
+          {hasReviews ? (
+            <>
+              <Star
+                size={13}
+                className="fill-amber-300 text-amber-300"
+              />
 
-          {ratingDisplay(p.rating)}
+              {ratingDisplay(p.rating, p.reviewsCount)}
 
-          <span className="font-medium opacity-80">
-            ({p.reviewsCount})
-          </span>
+              <span className="font-medium opacity-80">
+                ({p.reviewsCount})
+              </span>
+            </>
+          ) : (
+            "Nouveau"
+          )}
         </div>
 
         <div className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-[#062e32]/85 backdrop-blur px-3 py-1.5 text-[12px] font-bold text-white">
@@ -489,13 +525,15 @@ export function PropertyCard({
             </span>
           ) : null}
 
-          <span className="inline-flex items-center gap-1.5">
-            <Users
-              size={15}
-              className="text-slate-400"
-            />
-            {p.maxGuests} pers.
-          </span>
+          {p.maxGuests ? (
+            <span className="inline-flex items-center gap-1.5">
+              <Users
+                size={15}
+                className="text-slate-400"
+              />
+              {p.maxGuests} pers.
+            </span>
+          ) : null}
         </div>
 
         <div className="mt-3 flex flex-wrap gap-1.5">
@@ -539,9 +577,11 @@ export function PropertyCard({
               </p>
             ) : null}
 
-            <p className="mt-0.5 text-[12px] text-emerald-700 font-semibold">
-              Charges incluses ✓
-            </p>
+            {!p.pricePerNight && !p.pricePerMonth ? (
+              <p className="text-[14px] font-bold text-slate-700">
+                Tarif à confirmer
+              </p>
+            ) : null}
           </div>
         </div>
 
@@ -557,9 +597,9 @@ export function PropertyCard({
             href={WHATSAPP_LINK(
               `Bonjour PAVA LOGEMENT, je suis intéressé par : ${
                 p.title
-              } (${p.neighborhood}) — ${formatFCFA(
-                p.pricePerMonth || p.pricePerNight
-              )}. Est-il disponible ?`
+              } (${p.neighborhood}). ${propertyPriceText(
+                p
+              )}. Pouvez-vous me confirmer les informations et la disponibilité ?`
             )}
             target="_blank"
             rel="noreferrer"
@@ -608,7 +648,8 @@ function Gallery({
                   images.length
               )
             }
-            className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-white/90 hover:bg-white"
+            className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-white/90 hover:bg-white shadow"
+            aria-label="Photo précédente"
           >
             <ChevronLeft size={20} />
           </button>
@@ -617,7 +658,8 @@ function Gallery({
             onClick={() =>
               setIdx((idx + 1) % images.length)
             }
-            className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-white/90 hover:bg-white"
+            className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-white/90 hover:bg-white shadow"
+            aria-label="Photo suivante"
           >
             <ChevronRight size={20} />
           </button>
@@ -627,6 +669,7 @@ function Gallery({
               <button
                 key={i}
                 onClick={() => setIdx(i)}
+                aria-label={`Afficher la photo ${i + 1}`}
                 className={`h-2 rounded-full transition-all ${
                   i === idx
                     ? "w-7 bg-white"
@@ -648,8 +691,11 @@ export function PropertyModal({
   p: PropertyDTO;
   onClose: () => void;
 }) {
+  const hasCourtPrice = !!p.pricePerNight;
+  const hasLongPrice = !!p.pricePerMonth;
+
   const [tab, setTab] = useState<"court" | "long">(
-    p.pricePerNight ? "court" : "long"
+    hasCourtPrice ? "court" : "long"
   );
 
   const [form, setForm] = useState({
@@ -669,7 +715,9 @@ export function PropertyModal({
     document.body.style.overflow = "hidden";
 
     const esc = (e: KeyboardEvent) => {
-      if (e.key === "Escape") onClose();
+      if (e.key === "Escape") {
+        onClose();
+      }
     };
 
     window.addEventListener("keydown", esc);
@@ -686,9 +734,7 @@ export function PropertyModal({
     const a = new Date(form.checkIn).getTime();
     const b = new Date(form.checkOut).getTime();
 
-    const d = Math.round(
-      (b - a) / 86400000
-    );
+    const d = Math.round((b - a) / 86400000);
 
     return d > 0 ? d : 0;
   }, [form.checkIn, form.checkOut]);
@@ -702,66 +748,70 @@ export function PropertyModal({
       return p.pricePerNight * nights;
     }
 
-    if (tab === "long" && p.pricePerMonth) {
+    if (
+      tab === "long" &&
+      p.pricePerMonth
+    ) {
       return p.pricePerMonth;
     }
 
     return null;
   }, [tab, nights, p]);
 
-  const submit = async (
-    e: React.FormEvent
-  ) => {
+  const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
 
     try {
-      const res = await fetch(
-        "/api/bookings",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            propertyId: p.id,
-            propertyTitle: p.title,
-            fullName: form.fullName,
-            phone: form.phone,
-            email: form.email,
-            checkIn:
-              form.checkIn || null,
-            checkOut:
-              form.checkOut || null,
-            guests: form.guests,
-            stayType: tab,
-            message: form.message,
-            totalEstimated: estimated,
-          }),
-        }
-      );
+      const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          propertyId: p.id,
+          propertyTitle: p.title,
+          fullName: form.fullName,
+          phone: form.phone,
+          email: form.email,
+          checkIn: form.checkIn || null,
+          checkOut: form.checkOut || null,
+          guests: form.guests,
+          stayType: tab,
+          message: form.message,
+          totalEstimated: estimated,
+        }),
+      });
 
       if (res.ok) {
         setDone(true);
       } else {
         alert(
-          "Erreur d'envoi, réessayez ou passez par WhatsApp."
+          "Erreur d'envoi. Réessayez ou passez par WhatsApp."
         );
       }
+    } catch (error) {
+      console.error("Erreur demande logement :", error);
+
+      alert(
+        "Erreur d'envoi. Réessayez ou passez par WhatsApp."
+      );
     } finally {
       setSending(false);
     }
   };
 
-  const waMsg = `Bonjour PAVA LOGEMENT, je veux réserver : ${
+  const waMsg = `Bonjour PAVA LOGEMENT, je suis intéressé par le logement ${
     p.title
-  } (${p.neighborhood}). Nom: ${
+  } à ${p.neighborhood}. Nom : ${
     form.fullName || "..."
-  } — Arrivée: ${
+  }. Arrivée : ${
     form.checkIn || "..."
-  } Départ: ${
+  }. Départ : ${
     form.checkOut || "..."
-  } — ${form.guests} pers. Merci de me confirmer la disponibilité.`;
+  }. ${form.guests} pers. Pouvez-vous me confirmer les informations et la disponibilité ?`;
+
+  const showTabs = hasCourtPrice || hasLongPrice;
 
   return (
     <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center sm:p-6">
@@ -774,6 +824,7 @@ export function PropertyModal({
         <button
           onClick={onClose}
           className="absolute right-4 top-4 z-10 grid h-10 w-10 place-items-center rounded-full bg-white shadow-lg hover:bg-slate-100"
+          aria-label="Fermer"
         >
           <X size={20} />
         </button>
@@ -787,21 +838,32 @@ export function PropertyModal({
           <div className="p-6 sm:p-8">
             <div className="flex flex-wrap items-center gap-2 text-[12px] font-extrabold">
               <span className="rounded-full bg-teal-50 border border-teal-100 px-3 py-1 text-[#006b75] uppercase tracking-wider">
-                {TYPE_LABELS[p.type]}
+                {TYPE_LABELS[p.type] || p.type}
               </span>
 
               <span className="rounded-full bg-orange-50 border border-orange-100 px-3 py-1 text-[#b34a0e] uppercase tracking-wider">
-                {STAY_LABELS[p.stayType]}
+                {STAY_LABELS[p.stayType] || p.stayType}
               </span>
 
-              <span className="inline-flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1 text-white">
-                <Star
-                  size={12}
-                  className="fill-amber-300 text-amber-300"
-                />{" "}
-                {ratingDisplay(p.rating)} ·{" "}
-                {p.reviewsCount} avis
-              </span>
+              {p.reviewsCount ? (
+                <span className="inline-flex items-center gap-1 rounded-full bg-slate-900 px-3 py-1 text-white">
+                  <Star
+                    size={12}
+                    className="fill-amber-300 text-amber-300"
+                  />
+
+                  {ratingDisplay(
+                    p.rating,
+                    p.reviewsCount
+                  )}
+
+                  · {p.reviewsCount} avis
+                </span>
+              ) : (
+                <span className="rounded-full bg-slate-100 px-3 py-1 text-slate-600">
+                  Nouveau
+                </span>
+              )}
             </div>
 
             <h3 className="mt-3 text-[22px] sm:text-[26px] font-extrabold tracking-tight text-slate-900 leading-tight">
@@ -809,7 +871,7 @@ export function PropertyModal({
             </h3>
 
             <p className="mt-1.5 flex items-center gap-1.5 text-[14px] font-semibold text-slate-500">
-              <MapPin size={15} />{" "}
+              <MapPin size={15} />
               {p.address || p.neighborhood}, Dakar
             </p>
 
@@ -817,12 +879,18 @@ export function PropertyModal({
               {[
                 {
                   icon: BedDouble,
-                  v: `${p.bedrooms}`,
+                  v:
+                    p.bedrooms != null
+                      ? `${p.bedrooms}`
+                      : "—",
                   l: "Chambres",
                 },
                 {
                   icon: Bath,
-                  v: `${p.bathrooms}`,
+                  v:
+                    p.bathrooms != null
+                      ? `${p.bathrooms}`
+                      : "—",
                   l: "SDB",
                 },
                 {
@@ -834,7 +902,9 @@ export function PropertyModal({
                 },
                 {
                   icon: Users,
-                  v: `${p.maxGuests}`,
+                  v: p.maxGuests
+                    ? `${p.maxGuests}`
+                    : "—",
                   l: "Voyageurs",
                 },
               ].map((s, i) => (
@@ -858,51 +928,53 @@ export function PropertyModal({
               ))}
             </div>
 
-            <p className="mt-5 text-[15px] leading-relaxed text-slate-700">
-              {p.description}
-            </p>
+            {p.description ? (
+              <p className="mt-5 text-[15px] leading-relaxed text-slate-700">
+                {p.description}
+              </p>
+            ) : null}
 
-            <h4 className="mt-6 font-extrabold text-slate-900">
-              Équipements inclus
-            </h4>
+            {(p.amenities || []).length > 0 && (
+              <>
+                <h4 className="mt-6 font-extrabold text-slate-900">
+                  Équipements indiqués
+                </h4>
 
-            <div className="mt-3 grid sm:grid-cols-2 gap-2">
-              {(p.amenities || []).map((a, i) => (
-                <span
-                  key={i}
-                  className="inline-flex items-center gap-2 rounded-xl bg-teal-50/70 border border-teal-100 px-3.5 py-2.5 text-[13px] font-semibold text-teal-950"
-                >
-                  <Check
-                    size={15}
-                    className="text-emerald-600 shrink-0"
-                  />{" "}
-                  {a}
-                </span>
-              ))}
-            </div>
+                <div className="mt-3 grid sm:grid-cols-2 gap-2">
+                  {(p.amenities || []).map((a, i) => (
+                    <span
+                      key={i}
+                      className="inline-flex items-center gap-2 rounded-xl bg-teal-50/70 border border-teal-100 px-3.5 py-2.5 text-[13px] font-semibold text-teal-950"
+                    >
+                      <Check
+                        size={15}
+                        className="text-emerald-600 shrink-0"
+                      />
+
+                      {a}
+                    </span>
+                  ))}
+                </div>
+              </>
+            )}
 
             <div className="mt-6 rounded-2xl bg-[#062e32] p-5 text-[13px] text-teal-50/90">
-              <p className="font-extrabold text-white flex items-center gap-2">
-                <ShieldCheck
-                  size={17}
-                  className="text-emerald-300"
-                />{" "}
-                Réservation sécurisée PAVA
+              <p className="font-extrabold text-white">
+                Avant toute réservation ou paiement
               </p>
 
-              <ul className="mt-2.5 space-y-1.5 leading-relaxed">
+              <ul className="mt-2.5 space-y-2 leading-relaxed">
                 <li>
-                  ✓ Visite photo/vidéo WhatsApp avant paiement
+                  ✓ Vérifiez les informations du logement avec PAVA.
                 </li>
 
                 <li>
-                  ✓ Contrat + reçu Wave / Orange Money à
-                  chaque versement
+                  ✓ Demandez la confirmation de disponibilité pour vos dates.
                 </li>
 
                 <li>
-                  ✓ Remise des clés en main propre + état des
-                  lieux
+                  ✓ Vérifiez les conditions de location et de paiement avant
+                  tout versement.
                 </li>
               </ul>
             </div>
@@ -910,70 +982,79 @@ export function PropertyModal({
 
           <div className="border-t md:border-t-0 md:border-l bg-slate-50/70 p-6 sm:p-7">
             <div className="rounded-2xl bg-white border p-4 shadow-sm">
-              <div className="grid grid-cols-2 gap-1 rounded-xl bg-slate-100 p-1 text-[13px] font-bold">
-                {p.pricePerNight ? (
-                  <button
-                    onClick={() => setTab("court")}
-                    className={`rounded-lg py-2.5 transition ${
-                      tab === "court"
-                        ? "bg-white shadow font-extrabold text-slate-900"
-                        : "text-slate-500"
-                    }`}
-                  >
-                    Court séjour
-                  </button>
-                ) : null}
+              {showTabs && (
+                <div
+                  className={`grid ${
+                    hasCourtPrice && hasLongPrice
+                      ? "grid-cols-2"
+                      : "grid-cols-1"
+                  } gap-1 rounded-xl bg-slate-100 p-1 text-[13px] font-bold`}
+                >
+                  {hasCourtPrice ? (
+                    <button
+                      onClick={() => setTab("court")}
+                      className={`rounded-lg py-2.5 transition ${
+                        tab === "court"
+                          ? "bg-white shadow font-extrabold text-slate-900"
+                          : "text-slate-500"
+                      }`}
+                    >
+                      Court séjour
+                    </button>
+                  ) : null}
 
-                {p.pricePerMonth ? (
-                  <button
-                    onClick={() => setTab("long")}
-                    className={`rounded-lg py-2.5 transition ${
-                      tab === "long"
-                        ? "bg-white shadow font-extrabold text-slate-900"
-                        : "text-slate-500"
-                    }`}
-                  >
-                    Long séjour
-                  </button>
-                ) : null}
-              </div>
+                  {hasLongPrice ? (
+                    <button
+                      onClick={() => setTab("long")}
+                      className={`rounded-lg py-2.5 transition ${
+                        tab === "long"
+                          ? "bg-white shadow font-extrabold text-slate-900"
+                          : "text-slate-500"
+                      }`}
+                    >
+                      Long séjour
+                    </button>
+                  ) : null}
+                </div>
+              )}
 
               <div className="mt-4">
-                {tab === "court" &&
-                p.pricePerNight ? (
+                {tab === "court" && p.pricePerNight ? (
                   <p>
                     <span className="text-[24px] font-extrabold">
-                      {formatFCFA(
-                        p.pricePerNight
-                      )}
+                      {formatFCFA(p.pricePerNight)}
                     </span>{" "}
                     <span className="text-slate-500 font-medium">
                       / nuit
                     </span>
                   </p>
-                ) : p.pricePerMonth ? (
+                ) : tab === "long" && p.pricePerMonth ? (
                   <p>
                     <span className="text-[24px] font-extrabold">
-                      {formatFCFA(
-                        p.pricePerMonth
-                      )}
+                      {formatFCFA(p.pricePerMonth)}
                     </span>{" "}
                     <span className="text-slate-500 font-medium">
                       / mois
                     </span>
                   </p>
-                ) : null}
+                ) : (
+                  <p className="text-[16px] font-bold text-slate-700">
+                    Tarif à confirmer
+                  </p>
+                )}
 
-                <p className="text-[12px] font-semibold text-emerald-700">
-                  Charges incluses · Ménage départ inclus
+                <p className="mt-1 text-[12px] font-medium text-slate-500">
+                  Disponibilité et conditions à confirmer avec PAVA.
                 </p>
 
                 {estimated ? (
-                  <p className="mt-2 rounded-xl bg-orange-50 border border-orange-100 px-3 py-2 text-[13px] font-bold text-[#9a3f0a]">
-                    Estimation :{" "}
+                  <p className="mt-3 rounded-xl bg-orange-50 border border-orange-100 px-3 py-2 text-[13px] font-bold text-[#9a3f0a]">
+                    Montant indicatif :{" "}
                     {formatFCFA(estimated)}{" "}
                     {tab === "court"
-                      ? `· ${nights} nuit(s)`
+                      ? `· ${nights} nuit${
+                          nights > 1 ? "s" : ""
+                        }`
                       : "· 1 mois"}
                   </p>
                 ) : null}
@@ -990,8 +1071,7 @@ export function PropertyModal({
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        fullName:
-                          e.target.value,
+                        fullName: e.target.value,
                       })
                     }
                     placeholder="Nom complet *"
@@ -1005,8 +1085,7 @@ export function PropertyModal({
                       onChange={(e) =>
                         setForm({
                           ...form,
-                          phone:
-                            e.target.value,
+                          phone: e.target.value,
                         })
                       }
                       placeholder="Téléphone *"
@@ -1077,12 +1156,11 @@ export function PropertyModal({
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        message:
-                          e.target.value,
+                        message: e.target.value,
                       })
                     }
                     placeholder="Message (optionnel) : motif du séjour, heure d'arrivée…"
-                    rows={2}
+                    rows={3}
                     className="w-full rounded-xl border bg-white px-3.5 py-2.5 text-[14px] outline-none focus:border-[#006b75]"
                   />
 
@@ -1092,7 +1170,7 @@ export function PropertyModal({
                   >
                     {sending
                       ? "Envoi…"
-                      : "Demander à réserver"}
+                      : "Envoyer ma demande"}
                   </button>
 
                   <a
@@ -1102,13 +1180,12 @@ export function PropertyModal({
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 font-extrabold text-white hover:brightness-95"
                   >
                     <MessageCircle size={17} />
-                    Confirmer sur WhatsApp
+                    Continuer sur WhatsApp
                   </a>
 
                   <p className="text-center text-[12px] text-slate-500">
-                    Réponse moyenne en{" "}
-                    <strong>5 minutes</strong> · Sans
-                    engagement
+                    Votre demande est transmise à PAVA pour vérification des
+                    informations et de la disponibilité.
                   </p>
                 </form>
               ) : (
@@ -1120,9 +1197,7 @@ export function PropertyModal({
                   </p>
 
                   <p className="mt-1 text-[13px] text-emerald-800">
-                    Notre équipe vous appelle dans
-                    quelques minutes pour confirmer la
-                    disponibilité et la remise des clés.
+                    Votre demande a bien été transmise à PAVA LOGEMENT.
                   </p>
 
                   <a
@@ -1131,8 +1206,8 @@ export function PropertyModal({
                     rel="noreferrer"
                     className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-[14px] font-bold text-white"
                   >
-                    <Phone size={15} />
-                    Accélérer sur WhatsApp
+                    <MessageCircle size={15} />
+                    Continuer sur WhatsApp
                   </a>
                 </div>
               )}
@@ -1140,12 +1215,13 @@ export function PropertyModal({
 
             <div className="mt-3 rounded-2xl border bg-white p-4 text-[13px]">
               <p className="font-bold">
-                Paiement : Wave · Orange Money · Espèces
+                Conditions de paiement
               </p>
 
               <p className="mt-1 text-slate-500">
-                Acompte 30% pour bloquer les dates,
-                solde à la remise des clés avec reçu.
+                Les modalités de paiement, l'éventuel acompte et les conditions
+                de location sont à confirmer directement avec PAVA avant tout
+                versement.
               </p>
             </div>
           </div>
