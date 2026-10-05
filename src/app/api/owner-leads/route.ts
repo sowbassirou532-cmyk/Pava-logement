@@ -22,6 +22,7 @@ export async function POST(req: Request) {
       furnished,
       availableFrom,
       message,
+      images,
     } = body;
 
     if (!fullName || !phone) {
@@ -31,67 +32,72 @@ export async function POST(req: Request) {
       );
     }
 
-    const parsedPricePerNight =
-      pricePerNight !== "" &&
-      pricePerNight !== null &&
-      pricePerNight !== undefined
-        ? Number(pricePerNight)
-        : null;
+    const toNumberOrNull = (value: unknown) => {
+      if (
+        value === "" ||
+        value === null ||
+        value === undefined
+      ) {
+        return null;
+      }
 
-    const parsedPricePerMonth =
-      pricePerMonth !== "" &&
-      pricePerMonth !== null &&
-      pricePerMonth !== undefined
-        ? Number(pricePerMonth)
-        : null;
+      const number = Number(value);
 
-    const parsedBedrooms =
-      bedrooms !== "" &&
-      bedrooms !== null &&
-      bedrooms !== undefined
-        ? Number(bedrooms)
-        : null;
+      return Number.isFinite(number) ? number : null;
+    };
 
-    const parsedBathrooms =
-      bathrooms !== "" &&
-      bathrooms !== null &&
-      bathrooms !== undefined
-        ? Number(bathrooms)
-        : null;
-
-    const parsedSurfaceM2 =
-      surfaceM2 !== "" &&
-      surfaceM2 !== null &&
-      surfaceM2 !== undefined
-        ? Number(surfaceM2)
-        : null;
-
-    const parsedAvailableFrom =
-      availableFrom !== "" &&
-      availableFrom !== null &&
-      availableFrom !== undefined
-        ? availableFrom
-        : null;
+    const parsedImages = Array.isArray(images)
+      ? images.filter(
+          (image): image is string =>
+            typeof image === "string" &&
+            image.trim().length > 0
+        )
+      : [];
 
     const [row] = await db
       .insert(ownerLeads)
       .values({
-        fullName,
-        phone,
-        email: email || null,
-        propertyType: propertyType || null,
-        neighborhood: neighborhood || null,
-        address: address || null,
-        stayType: stayType || null,
-        pricePerNight: parsedPricePerNight,
-        pricePerMonth: parsedPricePerMonth,
-        bedrooms: parsedBedrooms,
-        bathrooms: parsedBathrooms,
-        surfaceM2: parsedSurfaceM2,
-        furnished: furnished || null,
-        availableFrom: parsedAvailableFrom,
-        message: message || null,
-        images: [],
+        fullName: String(fullName).trim(),
+        phone: String(phone).trim(),
+        email: email ? String(email).trim() : null,
+
+        propertyType: propertyType
+          ? String(propertyType)
+          : null,
+
+        neighborhood: neighborhood
+          ? String(neighborhood)
+          : null,
+
+        address: address
+          ? String(address).trim()
+          : null,
+
+        stayType: stayType
+          ? String(stayType)
+          : null,
+
+        pricePerNight: toNumberOrNull(pricePerNight),
+        pricePerMonth: toNumberOrNull(pricePerMonth),
+
+        bedrooms: toNumberOrNull(bedrooms),
+        bathrooms: toNumberOrNull(bathrooms),
+        surfaceM2: toNumberOrNull(surfaceM2),
+
+        furnished: furnished
+          ? String(furnished)
+          : null,
+
+        availableFrom: availableFrom
+          ? String(availableFrom)
+          : null,
+
+        message: message
+          ? String(message)
+          : null,
+
+        images: parsedImages,
+
         status: "pending",
       })
       .returning();
@@ -100,10 +106,17 @@ export async function POST(req: Request) {
       ok: true,
       lead: row,
     });
-  } catch (e: any) {
+  } catch (error: any) {
+    console.error(
+      "Erreur création demande propriétaire :",
+      error
+    );
+
     return NextResponse.json(
       {
-        error: e?.message || "Erreur lors de l'enregistrement de la demande.",
+        error:
+          error?.message ||
+          "Erreur lors de l'enregistrement de la demande.",
       },
       { status: 500 }
     );
