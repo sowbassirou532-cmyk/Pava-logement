@@ -24,8 +24,12 @@ export async function POST(req: Request) {
 
     if (!fullName || !phone) {
       return NextResponse.json(
-        { error: "Nom et téléphone requis." },
-        { status: 400 }
+        {
+          error: "Nom et téléphone requis.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -36,12 +40,16 @@ export async function POST(req: Request) {
         propertyTitle: propertyTitle || null,
         fullName: String(fullName).trim(),
         phone: String(phone).trim(),
-        email: email ? String(email).trim() : null,
+        email: email
+          ? String(email).trim()
+          : null,
         checkIn: checkIn || null,
         checkOut: checkOut || null,
         guests: guests ? Number(guests) : 1,
         stayType: stayType || "court",
-        message: message || null,
+        message: message
+          ? String(message).trim()
+          : null,
         totalEstimated: totalEstimated
           ? Number(totalEstimated)
           : null,
@@ -57,8 +65,12 @@ export async function POST(req: Request) {
     console.error("Erreur réservation :", error);
 
     return NextResponse.json(
-      { error: "Erreur serveur." },
-      { status: 500 }
+      {
+        error: "Erreur serveur.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
