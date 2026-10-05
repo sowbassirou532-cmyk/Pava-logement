@@ -2,30 +2,25 @@
 
 import { useEffect, useState } from "react";
 import { upload } from "@vercel/blob/client";
-import { CONTACT, WHATSAPP_LINK } from "@/lib/site";
+import { WHATSAPP_LINK } from "@/lib/site";
 import {
-  MoonStar,
-  KeyRound,
-  FileCheck,
   Building2,
-  HandCoins,
   Camera,
-  BrushCleaning,
-  Plane,
-  ShieldCheck,
-  ChevronDown,
-  Star,
-  Quote,
-  BadgeCheck,
-  Clock,
-  Wallet,
-  ArrowRight,
-  CheckCircle2,
-  BedDouble,
-  Bath,
-  Ruler,
   CalendarDays,
+  CheckCircle2,
+  ChevronDown,
+  Clock,
+  FileCheck,
+  HandCoins,
   ImagePlus,
+  KeyRound,
+  MessageCircle,
+  MoonStar,
+  Phone,
+  Ruler,
+  ShieldCheck,
+  Users,
+  Wallet,
   X,
 } from "lucide-react";
 
@@ -33,9 +28,9 @@ export function StayModes() {
   return (
     <section
       id="sejours"
-      className="mx-auto max-w-7xl px-4 sm:px-6 py-12 scroll-mt-24"
+      className="mx-auto max-w-7xl px-4 py-12 scroll-mt-24 sm:px-6"
     >
-      <div className="grid md:grid-cols-2 gap-5">
+      <div className="grid gap-5 md:grid-cols-2">
         <div className="relative overflow-hidden rounded-3xl bg-[#0a3f44] p-8 text-white">
           <MoonStar
             size={120}
@@ -43,75 +38,75 @@ export function StayModes() {
           />
 
           <p className="text-[13px] font-extrabold uppercase tracking-[0.16em] text-[#E9B44C]">
-            Court séjour · Type Airbnb
+            Court séjour
           </p>
 
-          <h3 className="mt-2 text-[26px] font-extrabold tracking-tight leading-tight">
-            Nuitée flexible, arrivée même le soir
+          <h3 className="mt-2 text-[26px] font-extrabold leading-tight tracking-tight">
+            Une solution flexible pour quelques nuits
           </h3>
 
           <p className="mt-3 text-[14px] leading-relaxed text-teal-50/80">
-            Chambres dès 12 000 FCFA/nuit, studios et appartements meublés
-            avec check-in 7j/7, accueil aéroport, draps + serviettes fournis,
-            ménage inclus. Idéal vacances, missions, escales, Tabaski & Magal.
+            Découvrez les logements disponibles pour un court séjour
+            et recherchez selon votre quartier, votre budget et vos
+            besoins.
           </p>
 
           <ul className="mt-4 space-y-2 text-[14px] font-medium">
             {[
-              "Remise des clés en main propre, 7j/7 jusqu'à 23h",
-              "Paiement Wave / Orange Money avec reçu instantané",
-              "Ménage + changement de linge 2x/semaine",
-            ].map((x, i) => (
-              <li key={i} className="flex gap-2">
+              "Recherche par quartier et budget",
+              "Informations du logement affichées avant la demande",
+              "Contact direct avec PAVA pour vérifier la disponibilité",
+            ].map((item) => (
+              <li key={item} className="flex gap-2">
                 <CheckCircle2
                   size={17}
                   className="mt-0.5 shrink-0 text-emerald-300"
                 />
-                {x}
+                {item}
               </li>
             ))}
           </ul>
 
           <a
             href="#logements"
-            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-extrabold text-[#0a3f44] hover:bg-teal-50 transition"
+            className="mt-6 inline-flex items-center gap-2 rounded-xl bg-white px-6 py-3 font-extrabold text-[#0a3f44] transition hover:bg-teal-50"
           >
-            Voir les courts séjours <ArrowRight size={17} />
+            Voir les courts séjours
           </a>
         </div>
 
-        <div className="relative overflow-hidden rounded-3xl bg-white border p-8">
+        <div className="relative overflow-hidden rounded-3xl border bg-white p-8">
           <KeyRound
             size={120}
             className="absolute -right-6 -top-6 opacity-[0.06]"
           />
 
           <p className="text-[13px] font-extrabold uppercase tracking-[0.16em] text-[#E2681B]">
-            Longue durée · 6 mois à 3 ans
+            Long séjour
           </p>
 
-          <h3 className="mt-2 text-[26px] font-extrabold tracking-tight text-[#0a3f44] leading-tight">
-            Bail clair, loyer stable, zéro surprise
+          <h3 className="mt-2 text-[26px] font-extrabold leading-tight tracking-tight text-[#0a3f44]">
+            Trouver un logement pour s&apos;installer
           </h3>
 
           <p className="mt-3 text-[14px] leading-relaxed text-slate-600">
-            Appartements, maisons et villas pour s'installer à Dakar : visite
-            accompagnée, dossier simple (pièce + avance), bail écrit + état
-            des lieux, SAV dépannage sous 48h.
+            Consultez les logements proposés pour une location
+            longue durée et contactez PAVA pour connaître les
+            conditions de location et la disponibilité.
           </p>
 
           <ul className="mt-4 space-y-2 text-[14px] font-medium text-slate-700">
             {[
-              "Caution encadrée + état des lieux avec photos",
-              "Loyer avec charges : eau, électricité, Wi-Fi, gardien",
-              "Accompagnement emménagement (Woyofal, fibre, transport)",
-            ].map((x, i) => (
-              <li key={i} className="flex gap-2">
+              "Prix mensuel affiché lorsqu'il est renseigné",
+              "Informations sur le logement et ses caractéristiques",
+              "Demande de contact directement auprès de PAVA",
+            ].map((item) => (
+              <li key={item} className="flex gap-2">
                 <CheckCircle2
                   size={17}
                   className="mt-0.5 shrink-0 text-[#006b75]"
                 />
-                {x}
+                {item}
               </li>
             ))}
           </ul>
@@ -119,9 +114,9 @@ export function StayModes() {
           <div className="mt-6 flex flex-wrap gap-2.5">
             <a
               href="#logements"
-              className="inline-flex items-center gap-2 rounded-xl bg-[#0a3f44] px-6 py-3 font-extrabold text-white hover:bg-[#006b75] transition"
+              className="inline-flex items-center gap-2 rounded-xl bg-[#0a3f44] px-6 py-3 font-extrabold text-white transition hover:bg-[#006b75]"
             >
-              Voir les longues durées <ArrowRight size={17} />
+              Voir les longues durées
             </a>
 
             <a
@@ -130,7 +125,7 @@ export function StayModes() {
               )}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center gap-2 rounded-xl border-2 border-[#0a3f44] px-6 py-3 font-extrabold text-[#0a3f44] hover:bg-[#0a3f44] hover:text-white transition"
+              className="inline-flex items-center gap-2 rounded-xl border-2 border-[#0a3f44] px-6 py-3 font-extrabold text-[#0a3f44] transition hover:bg-[#0a3f44] hover:text-white"
             >
               Être accompagné
             </a>
@@ -229,7 +224,10 @@ export function GestionLocative() {
       preview: URL.createObjectURL(file),
     }));
 
-    setSelectedFiles((current) => [...current, ...newItems]);
+    setSelectedFiles((current) => [
+      ...current,
+      ...newItems,
+    ]);
   };
 
   const removeFile = (index: number) => {
@@ -244,7 +242,9 @@ export function GestionLocative() {
     });
   };
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = async (
+    e: React.FormEvent<HTMLFormElement>
+  ) => {
     e.preventDefault();
     setSending(true);
 
@@ -274,20 +274,27 @@ export function GestionLocative() {
         );
       }
 
+      const stayLabel =
+        form.stayType === "court"
+          ? "Court séjour"
+          : form.stayType === "long"
+          ? "Long séjour"
+          : "Court + long séjour";
+
       const details = [
         "===== DEMANDE AJOUT DE LOGEMENT =====",
-        `Type de séjour : ${
-          form.stayType === "court"
-            ? "Court séjour"
-            : form.stayType === "long"
-            ? "Long séjour"
-            : "Court + long séjour"
-        }`,
-        `Prix / nuit : ${form.pricePerNight || "Non renseigné"} FCFA`,
-        `Prix / mois : ${form.pricePerMonth || "Non renseigné"} FCFA`,
+        `Type de séjour : ${stayLabel}`,
+        `Prix / nuit : ${
+          form.pricePerNight || "Non renseigné"
+        } FCFA`,
+        `Prix / mois : ${
+          form.pricePerMonth || "Non renseigné"
+        } FCFA`,
         `Chambres : ${form.bedrooms}`,
         `Salles de bain : ${form.bathrooms}`,
-        `Surface : ${form.surfaceM2 || "Non renseignée"} m²`,
+        `Surface : ${
+          form.surfaceM2 || "Non renseignée"
+        } m²`,
         `Meublé : ${form.furnished}`,
         `Disponible à partir du : ${
           form.availableFrom || "Non renseigné"
@@ -298,38 +305,42 @@ export function GestionLocative() {
         form.message || "Aucune description",
       ].join("\n");
 
-      const res = await fetch("/api/owner-leads", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fullName: form.fullName,
-          phone: form.phone,
-          email: form.email,
-          propertyType: form.propertyType,
-          neighborhood: form.neighborhood,
-          address: form.address,
-          stayType: form.stayType,
-          pricePerNight: form.pricePerNight,
-          pricePerMonth: form.pricePerMonth,
-          bedrooms: form.bedrooms,
-          bathrooms: form.bathrooms,
-          surfaceM2: form.surfaceM2,
-          furnished: form.furnished,
-          availableFrom: form.availableFrom,
-          message: details,
-          images: imageUrls,
-        }),
-      });
+      const res = await fetch(
+        "/api/owner-leads",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            fullName: form.fullName,
+            phone: form.phone,
+            email: form.email,
+            propertyType: form.propertyType,
+            neighborhood: form.neighborhood,
+            address: form.address,
+            stayType: form.stayType,
+            pricePerNight: form.pricePerNight,
+            pricePerMonth: form.pricePerMonth,
+            bedrooms: form.bedrooms,
+            bathrooms: form.bathrooms,
+            surfaceM2: form.surfaceM2,
+            furnished: form.furnished,
+            availableFrom: form.availableFrom,
+            message: details,
+            images: imageUrls,
+          }),
+        }
+      );
 
-      if (res.ok) {
-        setSent(true);
-      } else {
+      if (!res.ok) {
         alert(
           "Impossible d'envoyer la demande pour le moment. Réessayez ou contactez PAVA sur WhatsApp."
         );
+        return;
       }
+
+      setSent(true);
     } catch (error) {
       console.error(error);
 
@@ -354,56 +365,63 @@ export function GestionLocative() {
         ? "Long séjour"
         : "Court + long séjour"
     }\n` +
-    `Prix / nuit : ${form.pricePerNight || "..."} FCFA\n` +
-    `Prix / mois : ${form.pricePerMonth || "..."} FCFA`;
+    `Prix / nuit : ${
+      form.pricePerNight || "..."
+    } FCFA\n` +
+    `Prix / mois : ${
+      form.pricePerMonth || "..."
+    } FCFA`;
 
   return (
     <section
       id="gestion"
-      className="bg-white border-y scroll-mt-24"
+      className="scroll-mt-24 border-y bg-white"
     >
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 py-14 grid lg:grid-cols-2 gap-10 items-start">
+      <div className="mx-auto grid max-w-7xl items-start gap-10 px-4 py-14 sm:px-6 lg:grid-cols-2">
         <div>
-          <p className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 border border-orange-100 px-3.5 py-1.5 text-[13px] font-bold text-[#b34a0e]">
+          <p className="inline-flex items-center gap-1.5 rounded-full border border-orange-100 bg-orange-50 px-3.5 py-1.5 text-[13px] font-bold text-[#b34a0e]">
             <Building2 size={15} />
             Propriétaires · Publiez votre bien
           </p>
 
-          <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.5rem)] font-extrabold tracking-tight text-[#0a3f44] leading-tight">
+          <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.5rem)] font-extrabold leading-tight tracking-tight text-[#0a3f44]">
             Ajoutez votre logement sur PAVA LOGEMENT.
           </h2>
 
           <p className="mt-3 text-[15px] leading-relaxed text-slate-600">
-            Présentez-nous votre bien en quelques minutes. Notre équipe étudie
-            votre demande, vérifie les informations et vous contacte avant
-            toute publication.
+            Présentez-nous votre bien en quelques minutes.
+            PAVA étudie les informations transmises et vous
+            contacte avant toute publication.
           </p>
 
-          <div className="mt-6 grid sm:grid-cols-3 gap-3">
+          <div className="mt-6 grid gap-3 sm:grid-cols-3">
             {[
               {
-                t: "Simple",
-                d: "Quelques informations suffisent pour commencer.",
+                title: "Simple",
+                description:
+                  "Quelques informations suffisent pour commencer.",
               },
               {
-                t: "Vérifié",
-                d: "Chaque logement est étudié avant publication.",
+                title: "Vérifié",
+                description:
+                  "Chaque logement est étudié avant publication.",
               },
               {
-                t: "Sans engagement",
-                d: "La demande ne vous oblige à rien.",
+                title: "Sans engagement",
+                description:
+                  "La demande ne constitue pas une publication automatique.",
               },
-            ].map((s, i) => (
+            ].map((item) => (
               <div
-                key={i}
-                className="rounded-2xl bg-slate-50 border p-4 text-center"
+                key={item.title}
+                className="rounded-2xl border bg-slate-50 p-4 text-center"
               >
                 <p className="text-[20px] font-extrabold text-[#0a3f44]">
-                  {s.t}
+                  {item.title}
                 </p>
 
-                <p className="mt-1 text-[13px] text-slate-500 leading-snug">
-                  {s.d}
+                <p className="mt-1 text-[13px] leading-snug text-slate-500">
+                  {item.description}
                 </p>
               </div>
             ))}
@@ -413,40 +431,44 @@ export function GestionLocative() {
             {[
               {
                 icon: Camera,
-                t: "Mise en valeur du logement",
-                d: "Photos et informations présentées clairement sur PAVA.",
+                title: "Photos du logement",
+                description:
+                  "Ajoutez les photos que vous souhaitez faire examiner par PAVA.",
               },
               {
                 icon: FileCheck,
-                t: "Vérification avant publication",
-                d: "Nous échangeons avec vous avant de mettre le bien en ligne.",
+                title: "Vérification avant publication",
+                description:
+                  "Le logement reste en attente tant que PAVA ne l'a pas validé.",
               },
               {
                 icon: HandCoins,
-                t: "Court ou long séjour",
-                d: "Proposez votre logement selon la durée qui vous convient.",
+                title: "Court ou long séjour",
+                description:
+                  "Indiquez la durée de location que vous souhaitez proposer.",
               },
               {
                 icon: ShieldCheck,
-                t: "Une plateforme pensée pour Dakar",
-                d: "Quartier, budget, type de logement et durée de séjour.",
+                title: "Une présentation claire",
+                description:
+                  "Les informations validées pourront ensuite être présentées sur le catalogue.",
               },
-            ].map((s, i) => (
+            ].map((item) => (
               <div
-                key={i}
+                key={item.title}
                 className="flex gap-3.5 rounded-2xl border bg-white p-4 shadow-sm"
               >
                 <span className="grid h-11 w-11 shrink-0 place-items-center rounded-xl bg-teal-50 text-[#006b75]">
-                  <s.icon size={20} />
+                  <item.icon size={20} />
                 </span>
 
                 <div>
-                  <p className="font-extrabold text-[15px]">
-                    {s.t}
+                  <p className="text-[15px] font-extrabold">
+                    {item.title}
                   </p>
 
                   <p className="text-[13px] text-slate-500">
-                    {s.d}
+                    {item.description}
                   </p>
                 </div>
               </div>
@@ -454,7 +476,7 @@ export function GestionLocative() {
           </div>
         </div>
 
-        <div className="lg:sticky lg:top-24 rounded-3xl bg-[#062e32] p-7 sm:p-8 text-white shadow-2xl">
+        <div className="rounded-3xl bg-[#062e32] p-7 text-white shadow-2xl sm:p-8 lg:sticky lg:top-24">
           <h3 className="text-[21px] font-extrabold tracking-tight">
             Ajouter mon logement
           </h3>
@@ -473,15 +495,18 @@ export function GestionLocative() {
                   Vos coordonnées
                 </p>
 
-                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <input
                     required
                     placeholder="Nom complet *"
                     value={form.fullName}
                     onChange={(e) =>
-                      updateForm("fullName", e.target.value)
+                      updateForm(
+                        "fullName",
+                        e.target.value
+                      )
                     }
-                    className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] placeholder:text-teal-50/40 outline-none focus:border-[#E9B44C]"
+                    className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none placeholder:text-teal-50/40 focus:border-[#E9B44C]"
                   />
 
                   <input
@@ -489,9 +514,12 @@ export function GestionLocative() {
                     placeholder="Téléphone / WhatsApp *"
                     value={form.phone}
                     onChange={(e) =>
-                      updateForm("phone", e.target.value)
+                      updateForm(
+                        "phone",
+                        e.target.value
+                      )
                     }
-                    className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] placeholder:text-teal-50/40 outline-none focus:border-[#E9B44C]"
+                    className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none placeholder:text-teal-50/40 focus:border-[#E9B44C]"
                   />
                 </div>
 
@@ -500,9 +528,12 @@ export function GestionLocative() {
                   placeholder="E-mail (optionnel)"
                   value={form.email}
                   onChange={(e) =>
-                    updateForm("email", e.target.value)
+                    updateForm(
+                      "email",
+                      e.target.value
+                    )
                   }
-                  className="mt-3 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] placeholder:text-teal-50/40 outline-none focus:border-[#E9B44C]"
+                  className="mt-3 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none placeholder:text-teal-50/40 focus:border-[#E9B44C]"
                 />
               </div>
 
@@ -511,11 +542,14 @@ export function GestionLocative() {
                   Votre logement
                 </p>
 
-                <div className="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="mt-2 grid grid-cols-1 gap-3 sm:grid-cols-2">
                   <select
                     value={form.propertyType}
                     onChange={(e) =>
-                      updateForm("propertyType", e.target.value)
+                      updateForm(
+                        "propertyType",
+                        e.target.value
+                      )
                     }
                     className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none focus:border-[#E9B44C] [&>option]:text-slate-900"
                   >
@@ -526,15 +560,20 @@ export function GestionLocative() {
                       "Chambre",
                       "Villa",
                       "Maison",
-                    ].map((t) => (
-                      <option key={t}>{t}</option>
+                    ].map((item) => (
+                      <option key={item}>
+                        {item}
+                      </option>
                     ))}
                   </select>
 
                   <select
                     value={form.neighborhood}
                     onChange={(e) =>
-                      updateForm("neighborhood", e.target.value)
+                      updateForm(
+                        "neighborhood",
+                        e.target.value
+                      )
                     }
                     className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none focus:border-[#E9B44C] [&>option]:text-slate-900"
                   >
@@ -551,8 +590,10 @@ export function GestionLocative() {
                       "Wakam",
                       "Mame El Hadji",
                       "Autre",
-                    ].map((t) => (
-                      <option key={t}>{t}</option>
+                    ].map((item) => (
+                      <option key={item}>
+                        {item}
+                      </option>
                     ))}
                   </select>
                 </div>
@@ -561,15 +602,17 @@ export function GestionLocative() {
                   placeholder="Adresse du logement (optionnel)"
                   value={form.address}
                   onChange={(e) =>
-                    updateForm("address", e.target.value)
+                    updateForm(
+                      "address",
+                      e.target.value
+                    )
                   }
-                  className="mt-3 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] placeholder:text-teal-50/40 outline-none focus:border-[#E9B44C]"
+                  className="mt-3 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none placeholder:text-teal-50/40 focus:border-[#E9B44C]"
                 />
 
-                <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div className="mt-3 grid grid-cols-2 gap-3 sm:grid-cols-4">
                   <label className="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5">
-                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-teal-50/60">
-                      <BedDouble size={13} />
+                    <span className="text-[11px] font-bold text-teal-50/60">
                       Chambres
                     </span>
 
@@ -578,15 +621,17 @@ export function GestionLocative() {
                       min={0}
                       value={form.bedrooms}
                       onChange={(e) =>
-                        updateForm("bedrooms", e.target.value)
+                        updateForm(
+                          "bedrooms",
+                          e.target.value
+                        )
                       }
-                      className="mt-1 w-full bg-transparent outline-none text-[14px] font-bold"
+                      className="mt-1 w-full bg-transparent text-[14px] font-bold outline-none"
                     />
                   </label>
 
                   <label className="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5">
-                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-teal-50/60">
-                      <Bath size={13} />
+                    <span className="text-[11px] font-bold text-teal-50/60">
                       SDB
                     </span>
 
@@ -595,15 +640,17 @@ export function GestionLocative() {
                       min={0}
                       value={form.bathrooms}
                       onChange={(e) =>
-                        updateForm("bathrooms", e.target.value)
+                        updateForm(
+                          "bathrooms",
+                          e.target.value
+                        )
                       }
-                      className="mt-1 w-full bg-transparent outline-none text-[14px] font-bold"
+                      className="mt-1 w-full bg-transparent text-[14px] font-bold outline-none"
                     />
                   </label>
 
                   <label className="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5">
-                    <span className="flex items-center gap-1.5 text-[11px] font-bold text-teal-50/60">
-                      <Ruler size={13} />
+                    <span className="text-[11px] font-bold text-teal-50/60">
                       Surface
                     </span>
 
@@ -613,21 +660,31 @@ export function GestionLocative() {
                       placeholder="m²"
                       value={form.surfaceM2}
                       onChange={(e) =>
-                        updateForm("surfaceM2", e.target.value)
+                        updateForm(
+                          "surfaceM2",
+                          e.target.value
+                        )
                       }
-                      className="mt-1 w-full bg-transparent outline-none text-[14px] font-bold placeholder:text-teal-50/30"
+                      className="mt-1 w-full bg-transparent text-[14px] font-bold outline-none placeholder:text-teal-50/30"
                     />
                   </label>
 
                   <select
                     value={form.furnished}
                     onChange={(e) =>
-                      updateForm("furnished", e.target.value)
+                      updateForm(
+                        "furnished",
+                        e.target.value
+                      )
                     }
                     className="rounded-xl border border-white/15 bg-white/10 px-3 py-2.5 text-[13px] outline-none focus:border-[#E9B44C] [&>option]:text-slate-900"
                   >
-                    <option value="Non meublé">Non meublé</option>
-                    <option value="Meublé">Meublé</option>
+                    <option value="Non meublé">
+                      Non meublé
+                    </option>
+                    <option value="Meublé">
+                      Meublé
+                    </option>
                     <option value="Semi-meublé">
                       Semi-meublé
                     </option>
@@ -643,12 +700,21 @@ export function GestionLocative() {
                 <select
                   value={form.stayType}
                   onChange={(e) =>
-                    updateForm("stayType", e.target.value)
+                    updateForm(
+                      "stayType",
+                      e.target.value
+                    )
                   }
                   className="mt-2 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none focus:border-[#E9B44C] [&>option]:text-slate-900"
                 >
-                  <option value="court">Court séjour</option>
-                  <option value="long">Long séjour</option>
+                  <option value="court">
+                    Court séjour
+                  </option>
+
+                  <option value="long">
+                    Long séjour
+                  </option>
+
                   <option value="both">
                     Court + long séjour
                   </option>
@@ -657,7 +723,7 @@ export function GestionLocative() {
                 {(form.stayType === "court" ||
                   form.stayType === "both") && (
                   <div className="mt-3">
-                    <label className="block text-[12px] font-bold text-teal-50/60 mb-1.5">
+                    <label className="mb-1.5 block text-[12px] font-bold text-teal-50/60">
                       Prix par nuit
                     </label>
 
@@ -673,10 +739,10 @@ export function GestionLocative() {
                           )
                         }
                         placeholder="Ex. 15000"
-                        className="w-full bg-transparent outline-none text-[14px] font-semibold placeholder:text-teal-50/30"
+                        className="w-full bg-transparent text-[14px] font-semibold outline-none placeholder:text-teal-50/30"
                       />
 
-                      <span className="text-[12px] font-bold text-teal-50/50 whitespace-nowrap">
+                      <span className="whitespace-nowrap text-[12px] font-bold text-teal-50/50">
                         FCFA / nuit
                       </span>
                     </div>
@@ -686,7 +752,7 @@ export function GestionLocative() {
                 {(form.stayType === "long" ||
                   form.stayType === "both") && (
                   <div className="mt-3">
-                    <label className="block text-[12px] font-bold text-teal-50/60 mb-1.5">
+                    <label className="mb-1.5 block text-[12px] font-bold text-teal-50/60">
                       Prix par mois
                     </label>
 
@@ -702,10 +768,10 @@ export function GestionLocative() {
                           )
                         }
                         placeholder="Ex. 150000"
-                        className="w-full bg-transparent outline-none text-[14px] font-semibold placeholder:text-teal-50/30"
+                        className="w-full bg-transparent text-[14px] font-semibold outline-none placeholder:text-teal-50/30"
                       />
 
-                      <span className="text-[12px] font-bold text-teal-50/50 whitespace-nowrap">
+                      <span className="whitespace-nowrap text-[12px] font-bold text-teal-50/50">
                         FCFA / mois
                       </span>
                     </div>
@@ -743,9 +809,12 @@ export function GestionLocative() {
                   rows={5}
                   value={form.message}
                   onChange={(e) =>
-                    updateForm("message", e.target.value)
+                    updateForm(
+                      "message",
+                      e.target.value
+                    )
                   }
-                  className="mt-2 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] placeholder:text-teal-50/40 outline-none focus:border-[#E9B44C]"
+                  className="mt-2 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none placeholder:text-teal-50/40 focus:border-[#E9B44C]"
                 />
               </div>
 
@@ -754,7 +823,7 @@ export function GestionLocative() {
                   Photos du logement
                 </p>
 
-                <label className="mt-2 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-white/20 bg-white/[0.04] px-5 py-6 text-center hover:bg-white/[0.07] transition">
+                <label className="mt-2 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-white/20 bg-white/[0.04] px-5 py-6 text-center transition hover:bg-white/[0.07]">
                   <ImagePlus
                     size={28}
                     className="text-[#E9B44C]"
@@ -780,42 +849,46 @@ export function GestionLocative() {
                 </label>
 
                 {selectedFiles.length > 0 && (
-                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
-                    {selectedFiles.map((item, index) => (
-                      <div
-                        key={item.preview}
-                        className="relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-white/5"
-                      >
-                        <img
-                          src={item.preview}
-                          alt={`Photo ${index + 1}`}
-                          className="h-full w-full object-cover"
-                        />
-
-                        <button
-                          type="button"
-                          onClick={() => removeFile(index)}
-                          className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"
-                          aria-label={`Supprimer la photo ${
-                            index + 1
-                          }`}
+                  <div className="mt-3 grid grid-cols-2 gap-2 sm:grid-cols-4">
+                    {selectedFiles.map(
+                      (item, index) => (
+                        <div
+                          key={item.preview}
+                          className="relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-white/5"
                         >
-                          <X size={15} />
-                        </button>
-                      </div>
-                    ))}
+                          <img
+                            src={item.preview}
+                            alt={`Photo ${index + 1}`}
+                            className="h-full w-full object-contain"
+                          />
+
+                          <button
+                            type="button"
+                            onClick={() =>
+                              removeFile(index)
+                            }
+                            className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"
+                            aria-label={`Supprimer la photo ${
+                              index + 1
+                            }`}
+                          >
+                            <X size={15} />
+                          </button>
+                        </div>
+                      )
+                    )}
                   </div>
                 )}
 
                 <p className="mt-2 text-[12px] leading-relaxed text-teal-50/50">
-                  Les photos seront conservées dans un stockage privé et
-                  vérifiées par PAVA avant toute publication.
+                  Les photos sont conservées dans un stockage
+                  privé et examinées par PAVA avant toute publication.
                 </p>
               </div>
 
               <button
                 disabled={sending}
-                className="w-full rounded-xl bg-[#E2681B] py-3.5 font-extrabold hover:bg-[#c85a15] transition disabled:opacity-60"
+                className="w-full rounded-xl bg-[#E2681B] py-3.5 font-extrabold transition hover:bg-[#c85a15] disabled:opacity-60"
               >
                 {sending
                   ? selectedFiles.length > 0
@@ -828,8 +901,9 @@ export function GestionLocative() {
                 href={WHATSAPP_LINK(whatsappMessage)}
                 target="_blank"
                 rel="noreferrer"
-                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#25D366]/50 bg-[#25D366]/10 px-4 py-3 font-extrabold text-[#b8ffd3] hover:bg-[#25D366]/20 transition"
+                className="flex w-full items-center justify-center gap-2 rounded-xl border border-[#25D366]/50 bg-[#25D366]/10 px-4 py-3 font-extrabold text-[#b8ffd3] transition hover:bg-[#25D366]/20"
               >
+                <MessageCircle size={17} />
                 Préférer WhatsApp
               </a>
 
@@ -839,17 +913,19 @@ export function GestionLocative() {
               </p>
             </form>
           ) : (
-            <div className="mt-5 rounded-2xl bg-emerald-400/10 border border-emerald-300/30 p-6 text-center">
+            <div className="mt-5 rounded-2xl border border-emerald-300/30 bg-emerald-400/10 p-6 text-center">
               <p className="text-[26px]">🎉</p>
 
-              <p className="font-extrabold text-[18px]">
+              <p className="text-[18px] font-extrabold">
                 Votre demande a bien été reçue !
               </p>
 
               <p className="mt-2 text-[14px] leading-relaxed text-teal-50/75">
-                Merci {form.fullName.split(" ")[0]}. PAVA va examiner les
-                informations et les photos de votre logement, puis vous
-                contacter pour la vérification avant publication.
+                Merci{" "}
+                {form.fullName.split(" ")[0] || ""}. PAVA va
+                examiner les informations et les photos de votre
+                logement, puis vous contacter pour la vérification
+                avant publication.
               </p>
 
               <a
@@ -858,6 +934,7 @@ export function GestionLocative() {
                 rel="noreferrer"
                 className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-[14px] font-bold text-white"
               >
+                <MessageCircle size={15} />
                 Continuer sur WhatsApp
               </a>
             </div>
@@ -871,78 +948,107 @@ export function GestionLocative() {
 export function Services() {
   const items = [
     {
-      icon: BrushCleaning,
-      t: "Ménage & blanchisserie",
-      d: "Ménage pro avant chaque arrivée, linge frais, réassort consommables.",
+      icon: ShieldCheck,
+      title: "Annonces examinées",
+      description:
+        "Les logements proposés par les propriétaires sont examinés avant publication.",
     },
     {
-      icon: Plane,
-      t: "Accueil aéroport LSS",
-      d: "Prise en charge à l'arrivée, navette climatisée, remise des clés même à 2h du matin.",
+      icon: Camera,
+      title: "Photos et informations",
+      description:
+        "Les annonces peuvent présenter les photos et les caractéristiques transmises pour le logement.",
+    },
+    {
+      icon: MessageCircle,
+      title: "Contact avec PAVA",
+      description:
+        "Vous pouvez demander des informations complémentaires ou vérifier la disponibilité.",
+    },
+    {
+      icon: SearchIcon,
+      title: "Recherche simplifiée",
+      description:
+        "Cherchez selon le quartier, le type de logement, la durée et le budget.",
     },
     {
       icon: Wallet,
-      t: "Paiement flexible",
-      d: "Wave, Orange Money, espèces. Acompte 30%, solde aux clés, reçu systématique.",
+      title: "Des conditions visibles",
+      description:
+        "Les prix et informations disponibles sont affichés directement sur les annonces.",
     },
     {
-      icon: ShieldCheck,
-      t: "Sécurité 24h/24",
-      d: "Résidences gardiennées, serrures sécurisées, assistance 7j/7 sur WhatsApp.",
-    },
-    {
-      icon: Clock,
-      t: "Check-in / Check-out flexibles",
-      d: "Early check-in, late check-out et consigne bagages selon dispo.",
-    },
-    {
-      icon: FileCheck,
-      t: "Contrats & factures",
-      d: "Contrat de séjour, bail longue durée, factures pour entreprises & ONG.",
+      icon: Phone,
+      title: "Accompagnement",
+      description:
+        "PAVA reste votre point de contact pour les demandes effectuées depuis la plateforme.",
     },
   ];
 
   return (
     <section
       id="services"
-      className="mx-auto max-w-7xl px-4 sm:px-6 py-14 scroll-mt-24"
+      className="mx-auto max-w-7xl px-4 py-14 scroll-mt-24 sm:px-6"
     >
-      <div className="text-center max-w-2xl mx-auto">
-        <p className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 border border-teal-100 px-3.5 py-1.5 text-[13px] font-bold text-[#006b75]">
-          Nos services inclus
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="inline-flex items-center gap-1.5 rounded-full border border-teal-100 bg-teal-50 px-3.5 py-1.5 text-[13px] font-bold text-[#006b75]">
+          Services PAVA
         </p>
 
         <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.5rem)] font-extrabold tracking-tight text-[#0a3f44]">
-          Bien plus qu'une simple location
+          Un parcours plus simple pour rechercher un logement
         </h2>
 
-        <p className="mt-2 text-slate-600 text-[15px]">
-          Une expérience hôtelière avec la chaleur de l'accueil sénégalais —
-          teranga garantie.
+        <p className="mt-2 text-[15px] text-slate-600">
+          PAVA centralise les informations utiles pour vous aider
+          à trouver un logement et à prendre contact.
         </p>
       </div>
 
-      <div className="mt-8 grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
-        {items.map((s, i) => (
+      <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+        {items.map((item) => (
           <div
-            key={i}
-            className="rounded-3xl bg-white border p-6 hover:shadow-[0_18px_45px_rgba(6,46,50,0.1)] hover:-translate-y-1 transition"
+            key={item.title}
+            className="rounded-3xl border bg-white p-6 transition hover:-translate-y-1 hover:shadow-[0_18px_45px_rgba(6,46,50,0.1)]"
           >
-            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-gradient-to-br from-[#0a3f44] to-[#006b75] text-white shadow-lg">
-              <s.icon size={22} />
+            <span className="grid h-12 w-12 place-items-center rounded-2xl bg-[#0a3f44] text-white shadow-lg">
+              <item.icon size={22} />
             </span>
 
-            <h3 className="mt-4 font-extrabold text-[16px]">
-              {s.t}
+            <h3 className="mt-4 text-[16px] font-extrabold">
+              {item.title}
             </h3>
 
             <p className="mt-1.5 text-[14px] leading-relaxed text-slate-500">
-              {s.d}
+              {item.description}
             </p>
           </div>
         ))}
       </div>
     </section>
+  );
+}
+
+function SearchIcon({
+  size,
+}: {
+  size?: number;
+}) {
+  return (
+    <svg
+      width={size || 22}
+      height={size || 22}
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <circle cx="11" cy="11" r="8" />
+      <path d="m21 21-4.3-4.3" />
+    </svg>
   );
 }
 
@@ -952,12 +1058,12 @@ export function About() {
   return (
     <section
       id="apropos"
-      className="bg-[#f3ece0]/60 border-y scroll-mt-24"
+      className="scroll-mt-24 border-y bg-[#f3ece0]/60"
     >
-      <div className="mx-auto max-w-5xl px-4 sm:px-6 py-14 text-center">
-        <p className="inline-flex items-center gap-1.5 rounded-full bg-white border px-3.5 py-1.5 text-[13px] font-bold text-[#006b75]">
-          <BadgeCheck size={15} /> À propos · Fondée à Dakar par{" "}
-          {CONTACT.founder}
+      <div className="mx-auto max-w-5xl px-4 py-14 text-center sm:px-6">
+        <p className="inline-flex items-center gap-1.5 rounded-full border bg-white px-3.5 py-1.5 text-[13px] font-bold text-[#006b75]">
+          <ShieldCheck size={15} />
+          À propos de PAVA LOGEMENT
         </p>
 
         <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.5rem)] font-extrabold tracking-tight text-[#0a3f44]">
@@ -965,22 +1071,20 @@ export function About() {
         </h2>
 
         <p className="mx-auto mt-3 max-w-3xl text-[16px] leading-relaxed text-slate-600">
-          Après des expériences en France et en Allemagne où tout se fait en
-          quelques clics, notre fondateur a voulu apporter la même fluidité au
-          Sénégal :{" "}
-          <strong>
-            annonces transparentes, prix affichés, contrats clairs,
-            paiement tracé.
-          </strong>
+          PAVA LOGEMENT est une plateforme pensée pour simplifier
+          la recherche et la proposition de logements à Dakar,
+          avec des informations plus claires et un processus de
+          vérification avant publication.
         </p>
 
         <button
           onClick={() => setOpen(!open)}
-          className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-[#0a3f44] px-6 py-2.5 font-bold text-[#0a3f44] hover:bg-[#0a3f44] hover:text-white transition"
+          className="mt-5 inline-flex items-center gap-2 rounded-full border-2 border-[#0a3f44] px-6 py-2.5 font-bold text-[#0a3f44] transition hover:bg-[#0a3f44] hover:text-white"
         >
           {open
-            ? "Masquer notre histoire"
-            : "En savoir plus sur notre histoire"}{" "}
+            ? "Masquer"
+            : "En savoir plus sur PAVA"}
+
           <ChevronDown
             size={17}
             className={`transition ${
@@ -990,68 +1094,61 @@ export function About() {
         </button>
 
         {open && (
-          <div className="mt-7 grid md:grid-cols-2 gap-4 text-left animate-fade-up">
+          <div className="mt-7 grid gap-4 text-left md:grid-cols-2 animate-fade-up">
             {[
               {
-                t: "Une expertise digitale unique",
-                d: "Plateforme moderne, photos réelles, réservation WhatsApp en 5 minutes. Fini les journées perdues dans les agences physiques.",
+                title: "Une approche digitale",
+                description:
+                  "La plateforme permet de consulter les logements depuis un même espace et de rechercher selon plusieurs critères.",
               },
               {
-                t: "La rigueur administrative",
-                d: "Bail écrit, état des lieux avec photos, reçus Wave/OM à chaque paiement. Une sécurité inédite pour locataires et propriétaires.",
+                title: "Une vérification avant publication",
+                description:
+                  "Les propriétaires transmettent leurs informations et leurs photos. La publication intervient après examen par PAVA.",
               },
               {
-                t: "Des solutions pour tous budgets",
-                d: "Chambre à 12 000 FCFA/nuit pour les petits budgets, villa avec piscine pour les familles — même exigence de propreté partout.",
+                title: "Court ou long séjour",
+                description:
+                  "Le catalogue est pensé pour différentes durées de location et différents types de logements.",
               },
               {
-                t: "Un accompagnement humain",
-                d: "Équipe joignable 7j/7 par téléphone et WhatsApp, accueil aéroport, conseils quartiers, aide emménagement.",
+                title: "Un contact simple",
+                description:
+                  "Les visiteurs peuvent utiliser les demandes présentes sur le site ou contacter PAVA sur WhatsApp.",
               },
-            ].map((c, i) => (
+            ].map((item) => (
               <div
-                key={i}
-                className="rounded-2xl bg-white border-l-4 border-l-[#E2681B] border p-5 shadow-sm"
+                key={item.title}
+                className="rounded-2xl border-l-4 border-l-[#E2681B] bg-white p-5 shadow-sm"
               >
                 <p className="font-extrabold text-[#0a3f44]">
-                  {c.t}
+                  {item.title}
                 </p>
 
                 <p className="mt-1.5 text-[14px] leading-relaxed text-slate-600">
-                  {c.d}
+                  {item.description}
                 </p>
               </div>
             ))}
-
-            <p className="md:col-span-2 rounded-2xl bg-[#0a3f44] p-5 text-center font-bold text-white">
-              Rejoignez 4 800+ voyageurs et résidents qui nous font confiance
-              à Dakar.{" "}
-              <a
-                className="underline text-[#E9B44C]"
-                href="#logements"
-              >
-                Voir les logements →
-              </a>
-            </p>
           </div>
         )}
 
-        <div className="mt-8 grid grid-cols-3 gap-3 max-w-2xl mx-auto">
+        <div className="mx-auto mt-8 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-3">
           {[
-            ["Médina Rue 6x17", "Siège agence"],
-            ["7j/7", "Disponibilité"],
-            ["100%", "Annonces vérifiées"],
-          ].map((s, i) => (
+            ["Dakar", "Zone de lancement"],
+            ["Court & long séjour", "Durées proposées"],
+            ["Vérification", "Avant publication"],
+          ].map(([value, label]) => (
             <div
-              key={i}
-              className="rounded-2xl bg-white border px-4 py-4"
+              key={label}
+              className="rounded-2xl border bg-white px-4 py-4"
             >
               <p className="font-extrabold text-[#0a3f44]">
-                {s[0]}
+                {value}
               </p>
 
               <p className="text-[13px] text-slate-500">
-                {s[1]}
+                {label}
               </p>
             </div>
           ))}
@@ -1062,98 +1159,33 @@ export function About() {
 }
 
 export function Testimonials() {
-  const avis = [
-    {
-      n: "Aïssatou D.",
-      o: "Dakar · Long séjour",
-      t: "Appartement conforme aux photos, bail clair, gardien adorable. L'équipe a même aidé pour la fibre. Je recommande les yeux fermés.",
-      s: 5,
-    },
-    {
-      n: "Julien M.",
-      o: "Paris · Mission 3 semaines",
-      t: "Arrivée à 23h, clés remises à l'aéroport, studio impeccable au Plateau. Paiement Wave avec reçu, très pro. Mieux qu'Airbnb.",
-      s: 5,
-    },
-    {
-      n: "Fatou & Moussa",
-      o: "Vacances en famille",
-      t: "Villa avec piscine à Ngor pour 8 personnes. Ménage parfait, gardien discret. Les enfants veulent déjà revenir !",
-      s: 5,
-    },
-    {
-      n: "Ibrahima S.",
-      o: "Propriétaire Mermoz",
-      t: "Ils gèrent mon F3 depuis 1 an : photos pro, locataires sérieux, loyer reversé avant le 10 chaque mois avec relevé. Zéro stress.",
-      s: 5,
-    },
-  ];
-
   return (
-    <section className="mx-auto max-w-7xl px-4 sm:px-6 py-14">
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-3">
-        <div>
-          <p className="inline-flex items-center gap-1.5 rounded-full bg-amber-50 border border-amber-100 px-3.5 py-1.5 text-[13px] font-bold text-amber-800">
-            <Star
-              size={14}
-              className="fill-amber-400 text-amber-400"
-            />{" "}
-            4.8/5 sur 480+ avis
-          </p>
+    <section className="mx-auto max-w-5xl px-4 py-14 sm:px-6">
+      <div className="mx-auto max-w-2xl text-center">
+        <p className="inline-flex items-center gap-1.5 rounded-full border border-teal-100 bg-teal-50 px-3.5 py-1.5 text-[13px] font-bold text-[#006b75]">
+          Vos premiers retours
+        </p>
 
-          <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.5rem)] font-extrabold tracking-tight text-[#0a3f44]">
-            Ils nous font confiance
-          </h2>
-        </div>
+        <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.5rem)] font-extrabold tracking-tight text-[#0a3f44]">
+          Les premiers avis arrivent bientôt
+        </h2>
+
+        <p className="mt-2 text-[15px] leading-relaxed text-slate-600">
+          PAVA préfère afficher de vrais retours de clients plutôt
+          que d&apos;inventer des témoignages.
+        </p>
 
         <a
           href={WHATSAPP_LINK(
-            "Bonjour, je veux laisser un avis / réserver comme ces clients"
+            "Bonjour PAVA LOGEMENT, je souhaite laisser un retour sur mon expérience."
           )}
           target="_blank"
           rel="noreferrer"
-          className="inline-flex items-center gap-2 font-bold text-[#006b75] hover:underline"
+          className="mt-5 inline-flex items-center gap-2 rounded-full bg-[#0a3f44] px-6 py-3 font-extrabold text-white transition hover:bg-[#006b75]"
         >
-          Devenir le prochain avis 5★ <ArrowRight size={16} />
+          <MessageCircle size={16} />
+          Partager mon expérience
         </a>
-      </div>
-
-      <div className="mt-7 grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        {avis.map((a, i) => (
-          <figure
-            key={i}
-            className="flex flex-col rounded-3xl bg-white border p-6 shadow-sm hover:shadow-lg transition"
-          >
-            <Quote
-              size={26}
-              className="text-[#E2681B]/30"
-            />
-
-            <div className="mt-2 flex gap-0.5">
-              {Array.from({ length: a.s }).map((_, j) => (
-                <Star
-                  key={j}
-                  size={15}
-                  className="fill-amber-400 text-amber-400"
-                />
-              ))}
-            </div>
-
-            <blockquote className="mt-2.5 flex-1 text-[14px] leading-relaxed text-slate-700">
-              “{a.t}”
-            </blockquote>
-
-            <figcaption className="mt-4 border-t pt-3">
-              <p className="font-extrabold text-[14px]">
-                {a.n}
-              </p>
-
-              <p className="text-[13px] text-slate-500">
-                {a.o}
-              </p>
-            </figcaption>
-          </figure>
-        ))}
       </div>
     </section>
   );
@@ -1161,36 +1193,36 @@ export function Testimonials() {
 
 const FAQS = [
   {
-    q: "Quels sont les modes de paiement acceptés ?",
-    a: "Wave, Orange Money et espèces à la remise des clés. Chaque versement donne lieu à un reçu écrit (photo WhatsApp + papier). Acompte de 30% pour bloquer vos dates en court séjour, solde à l'arrivée.",
+    q: "Comment trouver un logement ?",
+    a: "Utilisez les filtres du catalogue pour rechercher par type de logement, quartier, durée de séjour et budget. Vous pouvez ensuite ouvrir une annonce pour consulter ses informations.",
   },
   {
-    q: "Les charges sont-elles incluses ?",
-    a: "Oui. L'eau, l'électricité, le Wi-Fi fibre et le ménage de départ sont inclus dans tous nos tarifs affichés. Pas de surprise à l'arrivée — c'est notre engagement transparence.",
+    q: "Les logements sont-ils vérifiés ?",
+    a: "Pour les logements proposés depuis le formulaire propriétaire, PAVA examine les informations et les photos avant publication.",
   },
   {
-    q: "Quelle est la différence entre court et long séjour ?",
-    a: "Court séjour : à la nuit, meublé tout inclus, idéal vacances/missions (12 000 à 75 000 FCFA/nuit). Long séjour : au mois avec bail de 6 mois à 3 ans, parfait pour s'installer (90 000 à 650 000 FCFA/mois).",
+    q: "Puis-je proposer mon propre logement ?",
+    a: "Oui. Utilisez la section « Ajouter mon logement », renseignez les informations demandées et joignez vos photos. La demande reste en attente jusqu'à sa vérification.",
   },
   {
-    q: "Puis-je visiter avant de payer ?",
-    a: "Absolument. Visite physique 7j/7 avec un agent, ou visite vidéo en direct sur WhatsApp si vous êtes à l'étranger. Nous ne demandons jamais de paiement avant visite ou contrat.",
+    q: "Comment contacter PAVA ?",
+    a: "Vous pouvez utiliser les boutons de contact présents sur le site ou écrire directement à PAVA sur WhatsApp.",
   },
   {
-    q: "Proposez-vous l'accueil à l'aéroport ?",
-    a: "Oui. Nous venons vous chercher à l'aéroport Blaise Diagne (ou LSS), navette climatisée + remise des clés directement, même tard le soir. Prévenez-nous 24h avant.",
+    q: "Les photos des propriétaires sont-elles publiques immédiatement ?",
+    a: "Non. Les photos envoyées dans une demande propriétaire sont conservées dans un stockage privé et examinées avant toute publication.",
   },
   {
-    q: "Je suis propriétaire, comment confier mon bien ?",
-    a: "Remplissez le formulaire Gestion locative ci-dessus ou écrivez-nous sur WhatsApp. Visite gratuite sous 48h, shooting photo, estimation court + long séjour, puis mise en location. Commission 8-12% seulement si loué.",
+    q: "Comment fonctionnent les paiements ?",
+    a: "Les conditions de paiement dépendent du logement et du propriétaire. Avant tout versement, vérifiez les modalités applicables à l'annonce et confirmez-les avec PAVA.",
   },
   {
-    q: "Fournissez-vous des contrats et factures ?",
-    a: "Oui : contrat de séjour pour le court terme, bail + état des lieux pour la longue durée, et factures pour entreprises, ONG et ambassades. Idéal pour notes de frais et visas.",
+    q: "Puis-je demander des informations supplémentaires ?",
+    a: "Oui. Vous pouvez demander à PAVA des précisions sur la disponibilité, les caractéristiques du logement, les conditions de location ou les modalités de réservation.",
   },
   {
-    q: "Que se passe-t-il en cas d'annulation ?",
-    a: "Annulation gratuite jusqu'à 72h avant l'arrivée (remboursement intégral de l'acompte). Passé ce délai, l'acompte est conservé ou reporté une fois sans frais.",
+    q: "Le catalogue contient-il uniquement des locations longue durée ?",
+    a: "Non. PAVA est pensé pour le court séjour et le long séjour. Les logements disponibles dépendent des annonces effectivement validées et publiées.",
   },
 ];
 
@@ -1200,49 +1232,42 @@ export function Faq() {
   return (
     <section
       id="faq"
-      className="mx-auto max-w-4xl px-4 sm:px-6 pb-14 scroll-mt-24"
+      className="mx-auto max-w-4xl px-4 pb-14 scroll-mt-24 sm:px-6"
     >
       <div className="text-center">
         <h2 className="text-[clamp(1.7rem,3.5vw,2.4rem)] font-extrabold tracking-tight text-[#0a3f44]">
           Questions fréquentes
         </h2>
 
-        <p className="mt-2 text-slate-600 text-[15px]">
-          Tout ce qu'il faut savoir avant de réserver. Une autre question ?{" "}
-          <a
-            className="font-bold text-[#006b75] underline"
-            target="_blank"
-            rel="noreferrer"
-            href={WHATSAPP_LINK(
-              "Bonjour, j'ai une question : ..."
-            )}
-          >
-            WhatsApp direct
-          </a>
+        <p className="mt-2 text-[15px] text-slate-600">
+          Les réponses essentielles avant de commencer une
+          recherche.
         </p>
       </div>
 
       <div className="mt-7 space-y-3">
-        {FAQS.map((f, i) => (
+        {FAQS.map((item, index) => (
           <div
-            key={i}
+            key={item.q}
             className={`overflow-hidden rounded-2xl border bg-white transition ${
-              open === i
-                ? "shadow-lg border-[#006b75]/30"
+              open === index
+                ? "border-[#006b75]/30 shadow-lg"
                 : "shadow-sm"
             }`}
           >
             <button
               onClick={() =>
-                setOpen(open === i ? null : i)
+                setOpen(
+                  open === index ? null : index
+                )
               }
-              className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left font-extrabold text-[15px] text-slate-900"
+              className="flex w-full items-center justify-between gap-3 px-5 py-4 text-left text-[15px] font-extrabold text-slate-900"
             >
-              {f.q}
+              {item.q}
 
               <span
                 className={`grid h-8 w-8 shrink-0 place-items-center rounded-full transition ${
-                  open === i
+                  open === index
                     ? "bg-[#0a3f44] text-white"
                     : "bg-slate-100"
                 }`}
@@ -1250,15 +1275,17 @@ export function Faq() {
                 <ChevronDown
                   size={17}
                   className={`transition ${
-                    open === i ? "rotate-180" : ""
+                    open === index
+                      ? "rotate-180"
+                      : ""
                   }`}
                 />
               </span>
             </button>
 
-            {open === i && (
+            {open === index && (
               <p className="px-5 pb-5 text-[14px] leading-relaxed text-slate-600 animate-fade-up">
-                {f.a}
+                {item.a}
               </p>
             )}
           </div>
