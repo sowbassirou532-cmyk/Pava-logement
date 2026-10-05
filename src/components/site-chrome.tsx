@@ -307,9 +307,7 @@ export function Footer() {
             </a>
 
             <a
-              href={CONTACT.site}
-              target="_blank"
-              rel="noreferrer"
+              href="/"
               aria-label="Site officiel PAVA LOGEMENT"
               title="Site officiel"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-[#E2681B] transition"
@@ -458,9 +456,7 @@ export function Footer() {
             </a>
 
             <a
-              href={CONTACT.site}
-              target="_blank"
-              rel="noreferrer"
+              href="/"
               className="inline-flex items-center gap-1.5 hover:text-white transition"
             >
               <Globe2 size={14} />
