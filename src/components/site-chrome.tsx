@@ -272,14 +272,15 @@ export function Footer() {
             de logements à Dakar.
           </p>
 
-          <div className="mt-4 flex flex-wrap gap-2">
+          {/* Réseaux sociaux */}
+          <div className="mt-4 flex items-center gap-2">
             <a
               href="https://www.instagram.com/pavalogement"
               target="_blank"
               rel="noreferrer"
               aria-label="Instagram PAVA LOGEMENT"
               title="Instagram"
-              className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white hover:bg-[#E1306C] transition"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-[#E1306C] transition"
             >
               <InstagramIcon size={19} />
             </a>
@@ -290,7 +291,7 @@ export function Footer() {
               rel="noreferrer"
               aria-label="TikTok PAVA LOGEMENT"
               title="TikTok"
-              className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white hover:bg-black transition"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-black transition"
             >
               <TikTokIcon size={19} />
             </a>
@@ -301,7 +302,7 @@ export function Footer() {
               rel="noreferrer"
               aria-label="Facebook PAVA LOGEMENT"
               title="Facebook"
-              className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white hover:bg-[#1877F2] transition"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-[#1877F2] transition"
             >
               <FacebookIcon size={19} />
             </a>
@@ -312,20 +313,10 @@ export function Footer() {
               rel="noreferrer"
               aria-label="Site officiel PAVA LOGEMENT"
               title="Site officiel"
-              className="grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white hover:bg-[#E2681B] transition"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-[#E2681B] transition"
             >
               <Globe2 size={19} />
             </a>
-          </div>
-
-          <div className="mt-3 flex flex-wrap items-center gap-x-3 gap-y-1 text-[12px] text-teal-50/55">
-            <span>Instagram</span>
-            <span>·</span>
-            <span>TikTok</span>
-            <span>·</span>
-            <span>Facebook</span>
-            <span>·</span>
-            <span>Site officiel</span>
           </div>
         </div>
 
@@ -404,7 +395,6 @@ export function Footer() {
                 size={16}
                 className="mt-0.5 shrink-0 text-[#E9B44C]"
               />
-
               <span>{CONTACT.address}</span>
             </li>
 
@@ -413,7 +403,6 @@ export function Footer() {
                 size={16}
                 className="mt-0.5 shrink-0 text-[#E9B44C]"
               />
-
               <span>{CONTACT.phones.join(" · ")}</span>
             </li>
 
@@ -422,7 +411,6 @@ export function Footer() {
                 size={16}
                 className="mt-0.5 shrink-0 text-[#E9B44C]"
               />
-
               <span>{CONTACT.emails[0]}</span>
             </li>
 
@@ -431,7 +419,6 @@ export function Footer() {
                 size={16}
                 className="mt-0.5 shrink-0 text-[#E9B44C]"
               />
-
               <span>{CONTACT.hours}</span>
             </li>
           </ul>
