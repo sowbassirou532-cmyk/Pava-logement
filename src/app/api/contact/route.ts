@@ -18,8 +18,12 @@ export async function POST(req: Request) {
 
     if (!name || !message) {
       return NextResponse.json(
-        { error: "Nom et message requis." },
-        { status: 400 }
+        {
+          error: "Nom et message requis.",
+        },
+        {
+          status: 400,
+        }
       );
     }
 
@@ -27,8 +31,12 @@ export async function POST(req: Request) {
       .insert(contactMessages)
       .values({
         name: String(name).trim(),
-        email: email ? String(email).trim() : null,
-        phone: phone ? String(phone).trim() : null,
+        email: email
+          ? String(email).trim()
+          : null,
+        phone: phone
+          ? String(phone).trim()
+          : null,
         subject: subject
           ? String(subject).trim()
           : null,
@@ -44,8 +52,12 @@ export async function POST(req: Request) {
     console.error("Erreur contact :", error);
 
     return NextResponse.json(
-      { error: "Erreur serveur." },
-      { status: 500 }
+      {
+        error: "Erreur serveur.",
+      },
+      {
+        status: 500,
+      }
     );
   }
 }
