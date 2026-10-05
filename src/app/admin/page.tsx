@@ -65,6 +65,17 @@ const normalizeStayType = (value: string | null) => {
   return "long";
 };
 
+const normalizeImageUrls = (images: unknown): string[] => {
+  if (!Array.isArray(images)) {
+    return [];
+  }
+
+  return images.filter(
+    (value: unknown): value is string =>
+      typeof value === "string" && value.startsWith("http")
+  );
+};
+
 async function privateBlobToPublic(
   privateUrl: string,
   leadId: string,
@@ -160,12 +171,7 @@ async function approveLead(formData: FormData) {
     redirect("/admin");
   }
 
-  const privateImages = Array.isArray(lead.images)
-    ? lead.images.filter(
-        (value): value is string =>
-          typeof value === "string" && value.startsWith("http")
-      )
-    : [];
+  const privateImages = normalizeImageUrls(lead.images);
 
   let publicImages: string[] = [];
 
@@ -204,7 +210,10 @@ async function approveLead(formData: FormData) {
     bedrooms: lead.bedrooms || 1,
     bathrooms: lead.bathrooms || 1,
     surfaceM2: lead.surfaceM2 || null,
-    maxGuests: Math.max(1, Number(lead.bedrooms || 1) * 2),
+    maxGuests: Math.max(
+      1,
+      Number(lead.bedrooms || 1) * 2
+    ),
     description: lead.message || null,
     amenities: lead.furnished ? [lead.furnished] : [],
     images: publicImages,
@@ -308,13 +317,7 @@ export default async function AdminPage() {
 
   const pendingWithPreviews = await Promise.all(
     pendingLeads.map(async (lead) => {
-      const sourceImages = Array.isArray(lead.images)
-        ? lead.images.filter(
-            (value): value is string =>
-              typeof value === "string" &&
-              value.startsWith("http")
-          )
-        : [];
+      const sourceImages = normalizeImageUrls(lead.images);
 
       const previews = (
         await Promise.all(
