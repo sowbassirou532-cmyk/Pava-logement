@@ -272,7 +272,6 @@ export function Footer() {
             de logements à Dakar.
           </p>
 
-          {/* Réseaux sociaux */}
           <div className="mt-4 flex items-center gap-2">
             <a
               href="https://www.instagram.com/pavalogement"
@@ -438,20 +437,36 @@ export function Footer() {
       </div>
 
       <div className="border-t border-white/10">
-        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col sm:flex-row items-center justify-between gap-2 text-center text-[13px] text-teal-50/60">
+        <div className="mx-auto max-w-7xl px-6 py-5 flex flex-col gap-3 text-center text-[13px] text-teal-50/60 sm:flex-row sm:items-center sm:justify-between">
           <span>
             © 2026 PAVA LOGEMENT · Dakar, Sénégal — Tous droits réservés.
           </span>
 
-          <a
-            href={CONTACT.site}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-flex items-center gap-1.5 hover:text-white transition"
-          >
-            <Globe2 size={14} />
-            Site officiel
-          </a>
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <a
+              href="/mentions-legales"
+              className="hover:text-white transition"
+            >
+              Mentions légales
+            </a>
+
+            <a
+              href="/politique-confidentialite"
+              className="hover:text-white transition"
+            >
+              Politique de confidentialité
+            </a>
+
+            <a
+              href={CONTACT.site}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 hover:text-white transition"
+            >
+              <Globe2 size={14} />
+              Site officiel
+            </a>
+          </div>
         </div>
       </div>
     </footer>
