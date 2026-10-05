@@ -1,7 +1,12 @@
 import { db } from "@/db";
 import { properties } from "@/db/schema";
-import { desc, eq, sql } from "drizzle-orm";
-import { Navbar, TopBar, Footer, WhatsAppFloat } from "@/components/site-chrome";
+import { eq, sql } from "drizzle-orm";
+import {
+  Navbar,
+  TopBar,
+  Footer,
+  WhatsAppFloat,
+} from "@/components/site-chrome";
 import { Hero } from "@/components/hero";
 import { Catalog } from "@/components/catalog";
 import {
@@ -22,7 +27,7 @@ async function getPrivatePreviewUrl(imageUrl: string) {
   try {
     const sourceUrl = new URL(imageUrl);
 
-    // Les images externes/publics restent inchangées.
+    // Les images externes/public restent inchangées.
     if (!sourceUrl.hostname.includes(".blob.vercel-storage.com")) {
       return imageUrl;
     }
@@ -71,7 +76,7 @@ export default async function HomePage() {
 
   const initial: PropertyDTO[] = await Promise.all(
     rows.map(async (r) => {
-      const rawImages = Array.isArray(r.images)
+      const rawImages: string[] = Array.isArray(r.images)
         ? r.images.filter(
             (value: unknown): value is string =>
               typeof value === "string"
@@ -80,12 +85,13 @@ export default async function HomePage() {
 
       const signedImages = (
         await Promise.all(
-          rawImages.map((image) =>
+          rawImages.map((image: string) =>
             getPrivatePreviewUrl(image)
           )
         )
       ).filter(
-        (image): image is string => Boolean(image)
+        (image: string | null): image is string =>
+          Boolean(image)
       );
 
       return {
