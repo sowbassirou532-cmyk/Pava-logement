@@ -3,10 +3,10 @@ export const CONTACT = {
   tagline: "Se loger à Dakar, sans stress.",
   phones: ["+221 78 293 16 67", "+221 76 358 02 42"],
   whatsapp: "221782931667",
-  emails: ["pavalogement@gmail.com", "sowbachir293@gmail.com"],
+  emails: ["pavalogement@gmail.com"],
   address: "Médina Rue 6 x Angle 17, Dakar — Sénégal",
-  hours: "Lun – Sam · 8h30 – 20h00 · Urgences 7j/7",
-  site: "https://pava-logement.netlify.app",
+  hours: "Contactez-nous pour connaître nos disponibilités",
+  site: "https://pava-logement-21gy-eight.vercel.app",
   founder: "Bassirou Sow",
 };
 
