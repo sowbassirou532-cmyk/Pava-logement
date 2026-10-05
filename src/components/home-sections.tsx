@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { upload } from "@vercel/blob/client";
 import { CONTACT, WHATSAPP_LINK } from "@/lib/site";
 import {
   MoonStar,
@@ -25,6 +26,7 @@ import {
   Ruler,
   CalendarDays,
   ImagePlus,
+  X,
 } from "lucide-react";
 
 export function StayModes() {
@@ -158,8 +160,20 @@ export function GestionLocative() {
     message: "",
   });
 
+  const [selectedFiles, setSelectedFiles] = useState<
+    { file: File; preview: string }[]
+  >([]);
+
   const [sent, setSent] = useState(false);
   const [sending, setSending] = useState(false);
+
+  useEffect(() => {
+    return () => {
+      selectedFiles.forEach((item) => {
+        URL.revokeObjectURL(item.preview);
+      });
+    };
+  }, [selectedFiles]);
 
   const updateForm = (key: string, value: string) => {
     setForm((current) => ({
@@ -168,11 +182,98 @@ export function GestionLocative() {
     }));
   };
 
+  const handleFiles = (files: FileList | null) => {
+    if (!files) return;
+
+    const incoming = Array.from(files);
+
+    const allowedTypes = [
+      "image/jpeg",
+      "image/png",
+      "image/webp",
+    ];
+
+    const invalidType = incoming.find(
+      (file) => !allowedTypes.includes(file.type)
+    );
+
+    if (invalidType) {
+      alert(
+        "Format non accepté. Utilisez uniquement JPG, PNG ou WebP."
+      );
+      return;
+    }
+
+    const tooLarge = incoming.find(
+      (file) => file.size > 8 * 1024 * 1024
+    );
+
+    if (tooLarge) {
+      alert(
+        "Une photo dépasse 8 Mo. Choisissez des images plus légères."
+      );
+      return;
+    }
+
+    const availableSlots = 8 - selectedFiles.length;
+
+    if (availableSlots <= 0) {
+      alert("Vous pouvez ajouter au maximum 8 photos.");
+      return;
+    }
+
+    const filesToAdd = incoming.slice(0, availableSlots);
+
+    const newItems = filesToAdd.map((file) => ({
+      file,
+      preview: URL.createObjectURL(file),
+    }));
+
+    setSelectedFiles((current) => [...current, ...newItems]);
+  };
+
+  const removeFile = (index: number) => {
+    setSelectedFiles((current) => {
+      const item = current[index];
+
+      if (item) {
+        URL.revokeObjectURL(item.preview);
+      }
+
+      return current.filter((_, i) => i !== index);
+    });
+  };
+
   const submit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSending(true);
 
     try {
+      let imageUrls: string[] = [];
+
+      if (selectedFiles.length > 0) {
+        imageUrls = await Promise.all(
+          selectedFiles.map(async ({ file }) => {
+            const safeName = file.name.replace(
+              /[^a-zA-Z0-9._-]/g,
+              "-"
+            );
+
+            const blob = await upload(
+              `owner-leads/${crypto.randomUUID()}-${safeName}`,
+              file,
+              {
+                access: "private",
+                handleUploadUrl: "/api/blob/upload",
+                contentType: file.type,
+              }
+            );
+
+            return blob.url;
+          })
+        );
+      }
+
       const details = [
         "===== DEMANDE AJOUT DE LOGEMENT =====",
         `Type de séjour : ${
@@ -191,6 +292,7 @@ export function GestionLocative() {
         `Disponible à partir du : ${
           form.availableFrom || "Non renseigné"
         }`,
+        `Nombre de photos envoyées : ${imageUrls.length}`,
         "",
         "Description :",
         form.message || "Aucune description",
@@ -208,7 +310,16 @@ export function GestionLocative() {
           propertyType: form.propertyType,
           neighborhood: form.neighborhood,
           address: form.address,
+          stayType: form.stayType,
+          pricePerNight: form.pricePerNight,
+          pricePerMonth: form.pricePerMonth,
+          bedrooms: form.bedrooms,
+          bathrooms: form.bathrooms,
+          surfaceM2: form.surfaceM2,
+          furnished: form.furnished,
+          availableFrom: form.availableFrom,
           message: details,
+          images: imageUrls,
         }),
       });
 
@@ -219,9 +330,11 @@ export function GestionLocative() {
           "Impossible d'envoyer la demande pour le moment. Réessayez ou contactez PAVA sur WhatsApp."
         );
       }
-    } catch {
+    } catch (error) {
+      console.error(error);
+
       alert(
-        "Impossible d'envoyer la demande pour le moment. Réessayez ou contactez PAVA sur WhatsApp."
+        "Une erreur est survenue pendant l'envoi. Vérifiez vos photos ou contactez PAVA sur WhatsApp."
       );
     } finally {
       setSending(false);
@@ -250,7 +363,6 @@ export function GestionLocative() {
       className="bg-white border-y scroll-mt-24"
     >
       <div className="mx-auto max-w-7xl px-4 sm:px-6 py-14 grid lg:grid-cols-2 gap-10 items-start">
-        {/* Présentation */}
         <div>
           <p className="inline-flex items-center gap-1.5 rounded-full bg-orange-50 border border-orange-100 px-3.5 py-1.5 text-[13px] font-bold text-[#b34a0e]">
             <Building2 size={15} />
@@ -289,6 +401,7 @@ export function GestionLocative() {
                 <p className="text-[20px] font-extrabold text-[#0a3f44]">
                   {s.t}
                 </p>
+
                 <p className="mt-1 text-[13px] text-slate-500 leading-snug">
                   {s.d}
                 </p>
@@ -328,15 +441,19 @@ export function GestionLocative() {
                 </span>
 
                 <div>
-                  <p className="font-extrabold text-[15px]">{s.t}</p>
-                  <p className="text-[13px] text-slate-500">{s.d}</p>
+                  <p className="font-extrabold text-[15px]">
+                    {s.t}
+                  </p>
+
+                  <p className="text-[13px] text-slate-500">
+                    {s.d}
+                  </p>
                 </div>
               </div>
             ))}
           </div>
         </div>
 
-        {/* Formulaire */}
         <div className="lg:sticky lg:top-24 rounded-3xl bg-[#062e32] p-7 sm:p-8 text-white shadow-2xl">
           <h3 className="text-[21px] font-extrabold tracking-tight">
             Ajouter mon logement
@@ -351,7 +468,6 @@ export function GestionLocative() {
               onSubmit={submit}
               className="mt-5 space-y-4"
             >
-              {/* Coordonnées */}
               <div>
                 <p className="text-[13px] font-extrabold uppercase tracking-wider text-[#E9B44C]">
                   Vos coordonnées
@@ -390,7 +506,6 @@ export function GestionLocative() {
                 />
               </div>
 
-              {/* Logement */}
               <div className="border-t border-white/10 pt-4">
                 <p className="text-[13px] font-extrabold uppercase tracking-wider text-[#E9B44C]">
                   Votre logement
@@ -513,12 +628,13 @@ export function GestionLocative() {
                   >
                     <option value="Non meublé">Non meublé</option>
                     <option value="Meublé">Meublé</option>
-                    <option value="Semi-meublé">Semi-meublé</option>
+                    <option value="Semi-meublé">
+                      Semi-meublé
+                    </option>
                   </select>
                 </div>
               </div>
 
-              {/* Location */}
               <div className="border-t border-white/10 pt-4">
                 <p className="text-[13px] font-extrabold uppercase tracking-wider text-[#E9B44C]">
                   Location
@@ -533,7 +649,9 @@ export function GestionLocative() {
                 >
                   <option value="court">Court séjour</option>
                   <option value="long">Long séjour</option>
-                  <option value="both">Court + long séjour</option>
+                  <option value="both">
+                    Court + long séjour
+                  </option>
                 </select>
 
                 {(form.stayType === "court" ||
@@ -549,7 +667,10 @@ export function GestionLocative() {
                         min={0}
                         value={form.pricePerNight}
                         onChange={(e) =>
-                          updateForm("pricePerNight", e.target.value)
+                          updateForm(
+                            "pricePerNight",
+                            e.target.value
+                          )
                         }
                         placeholder="Ex. 15000"
                         className="w-full bg-transparent outline-none text-[14px] font-semibold placeholder:text-teal-50/30"
@@ -575,7 +696,10 @@ export function GestionLocative() {
                         min={0}
                         value={form.pricePerMonth}
                         onChange={(e) =>
-                          updateForm("pricePerMonth", e.target.value)
+                          updateForm(
+                            "pricePerMonth",
+                            e.target.value
+                          )
                         }
                         placeholder="Ex. 150000"
                         className="w-full bg-transparent outline-none text-[14px] font-semibold placeholder:text-teal-50/30"
@@ -598,14 +722,16 @@ export function GestionLocative() {
                     type="date"
                     value={form.availableFrom}
                     onChange={(e) =>
-                      updateForm("availableFrom", e.target.value)
+                      updateForm(
+                        "availableFrom",
+                        e.target.value
+                      )
                     }
                     className="mt-1.5 w-full rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none focus:border-[#E9B44C]"
                   />
                 </label>
               </div>
 
-              {/* Description */}
               <div className="border-t border-white/10 pt-4">
                 <p className="text-[13px] font-extrabold uppercase tracking-wider text-[#E9B44C]">
                   Description
@@ -623,25 +749,68 @@ export function GestionLocative() {
                 />
               </div>
 
-              {/* Photos */}
-              <div className="rounded-2xl border border-dashed border-white/20 bg-white/[0.04] p-4">
-                <div className="flex gap-3">
-                  <span className="grid h-10 w-10 shrink-0 place-items-center rounded-xl bg-white/10 text-[#E9B44C]">
-                    <ImagePlus size={20} />
+              <div className="border-t border-white/10 pt-4">
+                <p className="text-[13px] font-extrabold uppercase tracking-wider text-[#E9B44C]">
+                  Photos du logement
+                </p>
+
+                <label className="mt-2 flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-white/20 bg-white/[0.04] px-5 py-6 text-center hover:bg-white/[0.07] transition">
+                  <ImagePlus
+                    size={28}
+                    className="text-[#E9B44C]"
+                  />
+
+                  <span className="mt-2 text-[14px] font-extrabold">
+                    Ajouter des photos
                   </span>
 
-                  <div>
-                    <p className="font-extrabold text-[14px]">
-                      Photos du logement
-                    </p>
+                  <span className="mt-1 text-[12px] text-teal-50/60">
+                    JPG, PNG ou WebP · jusqu'à 8 photos · 8 Mo par photo
+                  </span>
 
-                    <p className="mt-1 text-[12px] leading-relaxed text-teal-50/60">
-                      Après réception de votre demande, PAVA vous contactera
-                      sur WhatsApp pour récupérer les photos du logement et
-                      vérifier les informations avant publication.
-                    </p>
+                  <input
+                    type="file"
+                    accept="image/jpeg,image/png,image/webp"
+                    multiple
+                    className="hidden"
+                    onChange={(e) =>
+                      handleFiles(e.target.files)
+                    }
+                  />
+                </label>
+
+                {selectedFiles.length > 0 && (
+                  <div className="mt-3 grid grid-cols-2 sm:grid-cols-4 gap-2">
+                    {selectedFiles.map((item, index) => (
+                      <div
+                        key={item.preview}
+                        className="relative aspect-square overflow-hidden rounded-xl border border-white/10 bg-white/5"
+                      >
+                        <img
+                          src={item.preview}
+                          alt={`Photo ${index + 1}`}
+                          className="h-full w-full object-cover"
+                        />
+
+                        <button
+                          type="button"
+                          onClick={() => removeFile(index)}
+                          className="absolute right-1.5 top-1.5 grid h-7 w-7 place-items-center rounded-full bg-black/70 text-white hover:bg-black"
+                          aria-label={`Supprimer la photo ${
+                            index + 1
+                          }`}
+                        >
+                          <X size={15} />
+                        </button>
+                      </div>
+                    ))}
                   </div>
-                </div>
+                )}
+
+                <p className="mt-2 text-[12px] leading-relaxed text-teal-50/50">
+                  Les photos seront conservées dans un stockage privé et
+                  vérifiées par PAVA avant toute publication.
+                </p>
               </div>
 
               <button
@@ -649,7 +818,9 @@ export function GestionLocative() {
                 className="w-full rounded-xl bg-[#E2681B] py-3.5 font-extrabold hover:bg-[#c85a15] transition disabled:opacity-60"
               >
                 {sending
-                  ? "Envoi de votre demande…"
+                  ? selectedFiles.length > 0
+                    ? "Envoi des photos et de la demande…"
+                    : "Envoi de votre demande…"
                   : "Envoyer mon logement à PAVA"}
               </button>
 
@@ -677,8 +848,8 @@ export function GestionLocative() {
 
               <p className="mt-2 text-[14px] leading-relaxed text-teal-50/75">
                 Merci {form.fullName.split(" ")[0]}. PAVA va examiner les
-                informations de votre logement et vous contacter pour la
-                vérification et les photos.
+                informations et les photos de votre logement, puis vous
+                contacter pour la vérification avant publication.
               </p>
 
               <a
