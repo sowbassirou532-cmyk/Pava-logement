@@ -73,7 +73,10 @@ async function privateBlobToPublic(
   index: number
 ) {
   const sourceUrl = new URL(privateUrl);
-  const pathname = decodeURIComponent(sourceUrl.pathname).replace(/^\/+/, "");
+  const pathname = decodeURIComponent(sourceUrl.pathname).replace(
+    /^\/+/,
+    ""
+  );
 
   const result = await get(pathname, {
     access: "private",
@@ -83,6 +86,10 @@ async function privateBlobToPublic(
     throw new Error("Photo privée introuvable.");
   }
 
+  if (!result.stream) {
+    throw new Error("Flux de la photo indisponible.");
+  }
+
   const extension =
     result.blob.contentType === "image/png"
       ? "png"
@@ -90,7 +97,9 @@ async function privateBlobToPublic(
       ? "webp"
       : "jpg";
 
-  const destination = `properties/${leadId}/photo-${index + 1}-${Date.now()}.${extension}`;
+  const destination = `properties/${leadId}/photo-${
+    index + 1
+  }-${Date.now()}.${extension}`;
 
   const publicBlob = await put(destination, result.stream, {
     access: "public",
@@ -103,7 +112,10 @@ async function privateBlobToPublic(
 async function getPrivatePreviewUrl(privateUrl: string) {
   try {
     const sourceUrl = new URL(privateUrl);
-    const pathname = decodeURIComponent(sourceUrl.pathname).replace(/^\/+/, "");
+    const pathname = decodeURIComponent(sourceUrl.pathname).replace(
+      /^\/+/,
+      ""
+    );
 
     const token = await issueSignedToken({
       pathname,
@@ -175,7 +187,8 @@ async function approveLead(formData: FormData) {
       ? `${lead.propertyType} à ${neighborhood}`
       : `Logement à ${neighborhood}`;
 
-  const slugBase = slugify(title) || "logement-dakar";
+  const slugBase =
+    slugify(title) || "logement-dakar";
 
   const slug = `${slugBase}-${lead.id.slice(0, 8)}`;
 
@@ -210,7 +223,8 @@ async function approveLead(formData: FormData) {
     .update(ownerLeads)
     .set({
       status: "approved",
-      reviewNotes: "Logement validé et publié par PAVA.",
+      reviewNotes:
+        "Logement validé et publié par PAVA.",
       reviewedAt: new Date(),
     })
     .where(eq(ownerLeads.id, id));
@@ -234,7 +248,8 @@ async function rejectLead(formData: FormData) {
     .set({
       status: "rejected",
       reviewNotes:
-        notes || "Demande refusée après vérification.",
+        notes ||
+        "Demande refusée après vérification.",
       reviewedAt: new Date(),
     })
     .where(eq(ownerLeads.id, id));
@@ -298,28 +313,33 @@ export default async function AdminPage() {
     (lead) => lead.status === "rejected"
   );
 
-  const pendingWithPreviews = await Promise.all(
-    pendingLeads.map(async (lead) => {
-      const sourceImages = Array.isArray(lead.images)
-        ? lead.images.filter(
-            (value): value is string =>
-              typeof value === "string" &&
-              value.startsWith("http")
+  const pendingWithPreviews =
+    await Promise.all(
+      pendingLeads.map(async (lead) => {
+        const sourceImages = Array.isArray(lead.images)
+          ? lead.images.filter(
+              (value): value is string =>
+                typeof value === "string" &&
+                value.startsWith("http")
+            )
+          : [];
+
+        const previews = (
+          await Promise.all(
+            sourceImages
+              .slice(0, 8)
+              .map(getPrivatePreviewUrl)
           )
-        : [];
+        ).filter(
+          (url): url is string => Boolean(url)
+        );
 
-      const previews = (
-        await Promise.all(
-          sourceImages.slice(0, 8).map(getPrivatePreviewUrl)
-        )
-      ).filter((url): url is string => Boolean(url));
-
-      return {
-        lead,
-        previews,
-      };
-    })
-  );
+        return {
+          lead,
+          previews,
+        };
+      })
+    );
 
   return (
     <div className="min-h-screen bg-slate-100">
@@ -414,210 +434,256 @@ export default async function AdminPage() {
           </div>
 
           <div className="mt-4 space-y-5">
-            {pendingWithPreviews.map(({ lead, previews }) => {
-              const prices = [];
+            {pendingWithPreviews.map(
+              ({ lead, previews }) => {
+                const prices = [];
 
-              if (lead.pricePerNight) {
-                prices.push(
-                  `${formatMoney(lead.pricePerNight)} / nuit`
-                );
-              }
+                if (lead.pricePerNight) {
+                  prices.push(
+                    `${formatMoney(
+                      lead.pricePerNight
+                    )} / nuit`
+                  );
+                }
 
-              if (lead.pricePerMonth) {
-                prices.push(
-                  `${formatMoney(lead.pricePerMonth)} / mois`
-                );
-              }
+                if (lead.pricePerMonth) {
+                  prices.push(
+                    `${formatMoney(
+                      lead.pricePerMonth
+                    )} / mois`
+                  );
+                }
 
-              return (
-                <article
-                  key={lead.id}
-                  className="overflow-hidden rounded-3xl bg-white border shadow-sm"
-                >
-                  <div className="grid lg:grid-cols-[1.4fr_1fr]">
-                    <div className="p-6">
-                      <div className="flex flex-wrap items-center gap-2">
-                        <span className="rounded-full bg-orange-50 border border-orange-100 px-3 py-1.5 text-[12px] font-extrabold text-[#b34a0e]">
-                          EN ATTENTE
-                        </span>
-
-                        <span className="rounded-full bg-teal-50 border border-teal-100 px-3 py-1.5 text-[12px] font-extrabold text-[#006b75]">
-                          {lead.propertyType || "Logement"}
-                        </span>
-
-                        <span className="text-[12px] text-slate-400">
-                          {formatDate(lead.createdAt)}
-                        </span>
-                      </div>
-
-                      <h3 className="mt-3 text-[21px] font-extrabold text-slate-900">
-                        {lead.propertyType || "Logement"} à{" "}
-                        {lead.neighborhood || "Dakar"}
-                      </h3>
-
-                      <div className="mt-4 grid sm:grid-cols-2 gap-3">
-                        <div className="rounded-2xl bg-slate-50 border p-4">
-                          <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                            Propriétaire
-                          </p>
-
-                          <p className="mt-1 font-extrabold">
-                            {lead.fullName}
-                          </p>
-
-                          <p className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-slate-600">
-                            <Phone size={13} />
-                            {lead.phone}
-                          </p>
-
-                          {lead.email ? (
-                            <p className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-slate-600">
-                              <Mail size={13} />
-                              {lead.email}
-                            </p>
-                          ) : null}
-                        </div>
-
-                        <div className="rounded-2xl bg-slate-50 border p-4">
-                          <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                            Logement
-                          </p>
-
-                          <p className="mt-1 font-bold">
-                            {lead.neighborhood || "Dakar"}
-                          </p>
-
-                          <p className="mt-1 text-[13px] text-slate-600">
-                            {lead.address || "Adresse non renseignée"}
-                          </p>
-
-                          <p className="mt-1 text-[13px] text-slate-600">
-                            {lead.bedrooms || 0} chambre
-                            {Number(lead.bedrooms || 0) > 1 ? "s" : ""} ·{" "}
-                            {lead.bathrooms || 0} SDB ·{" "}
-                            {lead.surfaceM2 || "—"} m²
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="mt-3 flex flex-wrap gap-2">
-                        <span className="rounded-full bg-slate-100 px-3 py-1.5 text-[12px] font-bold text-slate-700">
-                          Séjour :{" "}
-                          {lead.stayType === "court"
-                            ? "Court"
-                            : lead.stayType === "both"
-                            ? "Court + long"
-                            : "Long"}
-                        </span>
-
-                        <span className="rounded-full bg-slate-100 px-3 py-1.5 text-[12px] font-bold text-slate-700">
-                          {lead.furnished || "Non précisé"}
-                        </span>
-
-                        {prices.map((price) => (
-                          <span
-                            key={price}
-                            className="rounded-full bg-orange-50 px-3 py-1.5 text-[12px] font-bold text-[#9a3f0a]"
-                          >
-                            {price}
+                return (
+                  <article
+                    key={lead.id}
+                    className="overflow-hidden rounded-3xl bg-white border shadow-sm"
+                  >
+                    <div className="grid lg:grid-cols-[1.4fr_1fr]">
+                      <div className="p-6">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <span className="rounded-full bg-orange-50 border border-orange-100 px-3 py-1.5 text-[12px] font-extrabold text-[#b34a0e]">
+                            EN ATTENTE
                           </span>
-                        ))}
-                      </div>
 
-                      <div className="mt-4 rounded-2xl border bg-slate-50 p-4">
-                        <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
-                          Description
-                        </p>
+                          <span className="rounded-full bg-teal-50 border border-teal-100 px-3 py-1.5 text-[12px] font-extrabold text-[#006b75]">
+                            {lead.propertyType ||
+                              "Logement"}
+                          </span>
 
-                        <p className="mt-1.5 whitespace-pre-line text-[13px] leading-relaxed text-slate-700">
-                          {lead.message || "Aucune description."}
-                        </p>
-                      </div>
-                    </div>
-
-                    <div className="border-t lg:border-t-0 lg:border-l bg-slate-50 p-5">
-                      <div className="flex items-center justify-between">
-                        <div className="inline-flex items-center gap-2 text-[13px] font-extrabold text-slate-700">
-                          <ImageIcon size={16} />
-                          {previews.length} photo
-                          {previews.length > 1 ? "s" : ""}
+                          <span className="text-[12px] text-slate-400">
+                            {formatDate(
+                              lead.createdAt
+                            )}
+                          </span>
                         </div>
 
-                        <span className="text-[12px] text-slate-400">
-                          Aperçu privé
-                        </span>
-                      </div>
+                        <h3 className="mt-3 text-[21px] font-extrabold text-slate-900">
+                          {lead.propertyType ||
+                            "Logement"}{" "}
+                          à{" "}
+                          {lead.neighborhood ||
+                            "Dakar"}
+                        </h3>
 
-                      {previews.length > 0 ? (
-                        <div className="mt-3 grid grid-cols-2 gap-2">
-                          {previews.map((preview, index) => (
-                            <a
-                              key={preview}
-                              href={preview}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="group relative aspect-square overflow-hidden rounded-2xl bg-slate-200 border"
+                        <div className="mt-4 grid sm:grid-cols-2 gap-3">
+                          <div className="rounded-2xl bg-slate-50 border p-4">
+                            <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                              Propriétaire
+                            </p>
+
+                            <p className="mt-1 font-extrabold">
+                              {lead.fullName}
+                            </p>
+
+                            <p className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-slate-600">
+                              <Phone size={13} />
+                              {lead.phone}
+                            </p>
+
+                            {lead.email ? (
+                              <p className="mt-1 inline-flex items-center gap-1.5 text-[13px] text-slate-600">
+                                <Mail size={13} />
+                                {lead.email}
+                              </p>
+                            ) : null}
+                          </div>
+
+                          <div className="rounded-2xl bg-slate-50 border p-4">
+                            <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                              Logement
+                            </p>
+
+                            <p className="mt-1 font-bold">
+                              {lead.neighborhood ||
+                                "Dakar"}
+                            </p>
+
+                            <p className="mt-1 text-[13px] text-slate-600">
+                              {lead.address ||
+                                "Adresse non renseignée"}
+                            </p>
+
+                            <p className="mt-1 text-[13px] text-slate-600">
+                              {lead.bedrooms || 0}{" "}
+                              chambre
+                              {Number(
+                                lead.bedrooms || 0
+                              ) > 1
+                                ? "s"
+                                : ""}{" "}
+                              ·{" "}
+                              {lead.bathrooms || 0}{" "}
+                              SDB ·{" "}
+                              {lead.surfaceM2 ||
+                                "—"}{" "}
+                              m²
+                            </p>
+                          </div>
+                        </div>
+
+                        <div className="mt-3 flex flex-wrap gap-2">
+                          <span className="rounded-full bg-slate-100 px-3 py-1.5 text-[12px] font-bold text-slate-700">
+                            Séjour :{" "}
+                            {lead.stayType ===
+                            "court"
+                              ? "Court"
+                              : lead.stayType ===
+                                "both"
+                              ? "Court + long"
+                              : "Long"}
+                          </span>
+
+                          <span className="rounded-full bg-slate-100 px-3 py-1.5 text-[12px] font-bold text-slate-700">
+                            {lead.furnished ||
+                              "Non précisé"}
+                          </span>
+
+                          {prices.map((price) => (
+                            <span
+                              key={price}
+                              className="rounded-full bg-orange-50 px-3 py-1.5 text-[12px] font-bold text-[#9a3f0a]"
                             >
-                              <img
-                                src={preview}
-                                alt={`Photo ${index + 1}`}
-                                className="h-full w-full object-cover transition group-hover:scale-105"
-                              />
-
-                              <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 py-1 text-[11px] font-bold text-white">
-                                <Eye size={12} className="inline mr-1" />
-                                Voir
-                              </span>
-                            </a>
+                              {price}
+                            </span>
                           ))}
                         </div>
-                      ) : (
-                        <div className="mt-3 rounded-2xl border border-dashed bg-white p-8 text-center text-[13px] text-slate-400">
-                          Aucune photo disponible.
+
+                        <div className="mt-4 rounded-2xl border bg-slate-50 p-4">
+                          <p className="text-[11px] font-extrabold uppercase tracking-wider text-slate-400">
+                            Description
+                          </p>
+
+                          <p className="mt-1.5 whitespace-pre-line text-[13px] leading-relaxed text-slate-700">
+                            {lead.message ||
+                              "Aucune description."}
+                          </p>
                         </div>
-                      )}
+                      </div>
 
-                      <div className="mt-4 space-y-2">
-                        <form action={approveLead}>
-                          <input
-                            type="hidden"
-                            name="id"
-                            value={lead.id}
-                          />
+                      <div className="border-t lg:border-t-0 lg:border-l bg-slate-50 p-5">
+                        <div className="flex items-center justify-between">
+                          <div className="inline-flex items-center gap-2 text-[13px] font-extrabold text-slate-700">
+                            <ImageIcon size={16} />
 
-                          <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0a3f44] px-4 py-3 text-[14px] font-extrabold text-white hover:bg-[#006b75] transition">
-                            <CheckCircle2 size={17} />
-                            Valider et publier
-                          </button>
-                        </form>
+                            {previews.length} photo
+                            {previews.length > 1
+                              ? "s"
+                              : ""}
+                          </div>
 
-                        <form
-                          action={rejectLead}
-                          className="space-y-2"
-                        >
-                          <input
-                            type="hidden"
-                            name="id"
-                            value={lead.id}
-                          />
+                          <span className="text-[12px] text-slate-400">
+                            Aperçu privé
+                          </span>
+                        </div>
 
-                          <input
-                            name="notes"
-                            placeholder="Motif du refus (optionnel)"
-                            className="w-full rounded-xl border bg-white px-3.5 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
-                          />
+                        {previews.length > 0 ? (
+                          <div className="mt-3 grid grid-cols-2 gap-2">
+                            {previews.map(
+                              (
+                                preview,
+                                index
+                              ) => (
+                                <a
+                                  key={preview}
+                                  href={preview}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="group relative aspect-square overflow-hidden rounded-2xl bg-slate-200 border"
+                                >
+                                  <img
+                                    src={preview}
+                                    alt={`Photo ${
+                                      index + 1
+                                    }`}
+                                    className="h-full w-full object-cover transition group-hover:scale-105"
+                                  />
 
-                          <button className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-red-200 bg-red-50 px-4 py-3 text-[14px] font-extrabold text-red-700 hover:bg-red-100 transition">
-                            <XCircle size={17} />
-                            Refuser la demande
-                          </button>
-                        </form>
+                                  <span className="absolute bottom-2 right-2 rounded-full bg-black/60 px-2 py-1 text-[11px] font-bold text-white">
+                                    <Eye
+                                      size={12}
+                                      className="inline mr-1"
+                                    />
+                                    Voir
+                                  </span>
+                                </a>
+                              )
+                            )}
+                          </div>
+                        ) : (
+                          <div className="mt-3 rounded-2xl border border-dashed bg-white p-8 text-center text-[13px] text-slate-400">
+                            Aucune photo disponible.
+                          </div>
+                        )}
+
+                        <div className="mt-4 space-y-2">
+                          <form
+                            action={approveLead}
+                          >
+                            <input
+                              type="hidden"
+                              name="id"
+                              value={lead.id}
+                            />
+
+                            <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#0a3f44] px-4 py-3 text-[14px] font-extrabold text-white hover:bg-[#006b75] transition">
+                              <CheckCircle2
+                                size={17}
+                              />
+                              Valider et publier
+                            </button>
+                          </form>
+
+                          <form
+                            action={rejectLead}
+                            className="space-y-2"
+                          >
+                            <input
+                              type="hidden"
+                              name="id"
+                              value={lead.id}
+                            />
+
+                            <input
+                              name="notes"
+                              placeholder="Motif du refus (optionnel)"
+                              className="w-full rounded-xl border bg-white px-3.5 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
+                            />
+
+                            <button className="flex w-full items-center justify-center gap-2 rounded-xl border-2 border-red-200 bg-red-50 px-4 py-3 text-[14px] font-extrabold text-red-700 hover:bg-red-100 transition">
+                              <XCircle
+                                size={17}
+                              />
+                              Refuser la demande
+                            </button>
+                          </form>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                </article>
-              );
-            })}
+                  </article>
+                );
+              }
+            )}
 
             {pendingWithPreviews.length === 0 && (
               <div className="rounded-3xl bg-white border p-10 text-center">
@@ -631,7 +697,8 @@ export default async function AdminPage() {
                 </p>
 
                 <p className="mt-1 text-[13px] text-slate-500">
-                  Les nouvelles demandes propriétaires apparaîtront ici.
+                  Les nouvelles demandes propriétaires
+                  apparaîtront ici.
                 </p>
               </div>
             )}
@@ -641,7 +708,8 @@ export default async function AdminPage() {
         {/* Réservations */}
         <section className="mt-7 rounded-3xl bg-white border overflow-hidden">
           <h2 className="px-6 py-4 font-extrabold border-b text-[#0a3f44]">
-            Dernières demandes de réservation ({bookingsRows.length})
+            Dernières demandes de réservation (
+            {bookingsRows.length})
           </h2>
 
           <div className="overflow-x-auto">
@@ -665,7 +733,9 @@ export default async function AdminPage() {
                     className="border-t hover:bg-slate-50"
                   >
                     <td className="px-4 py-2.5 whitespace-nowrap">
-                      {formatDate(booking.createdAt)}
+                      {formatDate(
+                        booking.createdAt
+                      )}
                     </td>
 
                     <td className="px-4 py-2.5 font-bold">
@@ -677,11 +747,13 @@ export default async function AdminPage() {
                     </td>
 
                     <td className="px-4 py-2.5 max-w-[220px] truncate">
-                      {booking.propertyTitle || "—"}
+                      {booking.propertyTitle ||
+                        "—"}
                     </td>
 
                     <td className="px-4 py-2.5">
-                      {booking.stayType} · {booking.guests} pers.
+                      {booking.stayType} ·{" "}
+                      {booking.guests} pers.
                     </td>
 
                     <td className="px-4 py-2.5 whitespace-nowrap">
@@ -691,7 +763,9 @@ export default async function AdminPage() {
 
                     <td className="px-4 py-2.5 font-bold">
                       {booking.totalEstimated
-                        ? formatMoney(booking.totalEstimated)
+                        ? formatMoney(
+                            booking.totalEstimated
+                          )
                         : "—"}
                     </td>
                   </tr>
@@ -716,7 +790,8 @@ export default async function AdminPage() {
         <div className="mt-5 grid lg:grid-cols-2 gap-5">
           <section className="rounded-3xl bg-white border overflow-hidden">
             <h2 className="px-6 py-4 font-extrabold border-b text-[#0a3f44]">
-              Messages contact ({messagesRows.length})
+              Messages contact (
+              {messagesRows.length})
             </h2>
 
             <div className="max-h-[420px] overflow-y-auto divide-y">
@@ -730,12 +805,15 @@ export default async function AdminPage() {
                   </p>
 
                   <p className="mt-1 text-[12px] text-slate-400">
-                    {formatDate(message.createdAt)}
+                    {formatDate(
+                      message.createdAt
+                    )}
                   </p>
 
                   <p className="mt-1 text-[13px] text-[#006b75] font-semibold">
-                    {message.subject || "Demande"} ·{" "}
-                    {message.phone || "—"} ·{" "}
+                    {message.subject ||
+                      "Demande"}{" "}
+                    · {message.phone || "—"} ·{" "}
                     {message.email || "—"}
                   </p>
 
@@ -755,7 +833,8 @@ export default async function AdminPage() {
 
           <section className="rounded-3xl bg-white border overflow-hidden">
             <h2 className="px-6 py-4 font-extrabold border-b text-[#0a3f44]">
-              Historique propriétaires ({leadsRows.length})
+              Historique propriétaires (
+              {leadsRows.length})
             </h2>
 
             <div className="max-h-[420px] overflow-y-auto divide-y">
@@ -781,7 +860,8 @@ export default async function AdminPage() {
                         className={`rounded-full px-2.5 py-1 text-[11px] font-extrabold ${
                           lead.status === "approved"
                             ? "bg-emerald-50 text-emerald-700"
-                            : lead.status === "rejected"
+                            : lead.status ===
+                              "rejected"
                             ? "bg-red-50 text-red-700"
                             : "bg-orange-50 text-orange-700"
                         }`}
@@ -791,9 +871,12 @@ export default async function AdminPage() {
                     </div>
 
                     <p className="mt-1 text-[13px] text-[#006b75] font-semibold">
-                      {lead.propertyType || "Logement"} ·{" "}
-                      {lead.neighborhood || "Dakar"} ·{" "}
-                      {lead.phone}
+                      {lead.propertyType ||
+                        "Logement"}{" "}
+                      ·{" "}
+                      {lead.neighborhood ||
+                        "Dakar"}{" "}
+                      · {lead.phone}
                     </p>
 
                     {lead.reviewNotes ? (
@@ -819,6 +902,7 @@ export default async function AdminPage() {
             <MessageCircle size={15} />
             Contrôle PAVA
           </span>
+
           <span className="ml-2">
             Une demande n'apparaît dans le catalogue qu'après validation.
           </span>
