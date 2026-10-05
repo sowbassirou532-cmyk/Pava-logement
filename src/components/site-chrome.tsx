@@ -10,7 +10,7 @@ import {
   X,
   MessageCircle,
   Clock,
-  Globe2,
+  Home,
 } from "lucide-react";
 
 function TikTokIcon({ size = 20 }: { size?: number }) {
@@ -308,11 +308,11 @@ export function Footer() {
 
             <a
               href="/"
-              aria-label="Site officiel PAVA LOGEMENT"
-              title="Site officiel"
+              aria-label="Accueil PAVA LOGEMENT"
+              title="Accueil PAVA LOGEMENT"
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-[#E2681B] transition"
             >
-              <Globe2 size={19} />
+              <Home size={19} />
             </a>
           </div>
         </div>
@@ -459,8 +459,8 @@ export function Footer() {
               href="/"
               className="inline-flex items-center gap-1.5 hover:text-white transition"
             >
-              <Globe2 size={14} />
-              Site officiel
+              <Home size={14} />
+              Accueil
             </a>
           </div>
         </div>
