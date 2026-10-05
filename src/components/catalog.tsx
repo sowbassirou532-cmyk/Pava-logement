@@ -67,7 +67,10 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
 
         if (query.trim()) params.set("q", query.trim());
 
-        const res = await fetch(`/api/properties?${params.toString()}`);
+        const res = await fetch(
+          `/api/properties?${params.toString()}`
+        );
+
         const data = await res.json();
 
         if (data.properties) {
@@ -135,8 +138,8 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <p className="inline-flex items-center gap-1.5 rounded-full bg-teal-50 border border-teal-100 px-3.5 py-1.5 text-[13px] font-bold text-[#006b75]">
-            <Sparkles size={15} /> Catalogue vérifié · Photos réelles · Dispo
-            7j/7
+            <Sparkles size={15} />
+            Catalogue vérifié · Photos réelles · Dispo 7j/7
           </p>
 
           <h2 className="mt-3 text-[clamp(1.7rem,3.5vw,2.6rem)] font-extrabold tracking-tight text-[#0a3f44] leading-tight">
@@ -144,8 +147,9 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
           </h2>
 
           <p className="mt-2 max-w-2xl text-[15px] text-slate-600 leading-relaxed">
-            Court séjour type Airbnb dès <strong>12 000 FCFA/nuit</strong> et
-            location longue durée avec bail. Tous nos logements sont visités,
+            Court séjour type Airbnb dès{" "}
+            <strong>12 000 FCFA/nuit</strong> et location longue
+            durée avec bail. Tous nos logements sont visités,
             nettoyés et sécurisés avant chaque arrivée.
           </p>
         </div>
@@ -192,6 +196,7 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
             className="rounded-2xl bg-slate-50 border px-4 py-3 text-[14px] font-semibold outline-none focus:border-[#006b75]"
           >
             <option value="all">Tous quartiers</option>
+
             {QUARTIERS.map((q) => (
               <option key={q} value={q}>
                 {q}
@@ -213,6 +218,7 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
             value={budget}
             onChange={(e) => {
               setBudget(e.target.value);
+
               if (e.target.value !== "custom") {
                 setCustomBudget("");
               }
@@ -221,7 +227,9 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
             className="rounded-2xl bg-slate-50 border px-4 py-3 text-[14px] font-semibold outline-none focus:border-[#006b75] disabled:cursor-not-allowed disabled:opacity-60"
           >
             {stay === "all" ? (
-              <option value="all">Choisir le séjour d'abord</option>
+              <option value="all">
+                Choisir le séjour d'abord
+              </option>
             ) : (
               <>
                 <option value="all">
@@ -231,12 +239,17 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
                 </option>
 
                 {currentBudgetOptions.map((option) => (
-                  <option key={option.value} value={option.value}>
+                  <option
+                    key={option.value}
+                    value={option.value}
+                  >
                     {option.label}
                   </option>
                 ))}
 
-                <option value="custom">Prix personnalisé</option>
+                <option value="custom">
+                  Prix personnalisé
+                </option>
               </>
             )}
           </select>
@@ -246,7 +259,9 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
           <div className="mt-3 flex flex-col sm:flex-row sm:items-center gap-2.5">
             <label className="text-[13px] font-bold text-slate-600">
               Budget maximum{" "}
-              {stay === "court" ? "par nuit" : "par mois"}
+              {stay === "court"
+                ? "par nuit"
+                : "par mois"}
             </label>
 
             <div className="flex items-center gap-2 rounded-2xl bg-slate-50 border px-4 py-2.5 max-w-xs focus-within:border-[#006b75] focus-within:bg-white transition">
@@ -255,13 +270,21 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
                 inputMode="numeric"
                 value={customBudget}
                 onChange={(e) =>
-                  setCustomBudget(e.target.value.replace(/\D/g, ""))
+                  setCustomBudget(
+                    e.target.value.replace(/\D/g, "")
+                  )
                 }
-                placeholder={stay === "court" ? "Ex. 12000" : "Ex. 85000"}
+                placeholder={
+                  stay === "court"
+                    ? "Ex. 12000"
+                    : "Ex. 85000"
+                }
                 className="w-full bg-transparent outline-none text-[14px] font-semibold"
               />
+
               <span className="text-[13px] font-bold text-slate-500 whitespace-nowrap">
-                FCFA / {stay === "court" ? "nuit" : "mois"}
+                FCFA /{" "}
+                {stay === "court" ? "nuit" : "mois"}
               </span>
             </div>
           </div>
@@ -269,7 +292,8 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
 
         <div className="mt-3 flex flex-wrap items-center gap-2 text-[13px]">
           <span className="inline-flex items-center gap-1.5 font-bold text-slate-500">
-            <SlidersHorizontal size={14} /> Filtres rapides :
+            <SlidersHorizontal size={14} />
+            Filtres rapides :
           </span>
 
           {[
@@ -323,19 +347,21 @@ export function Catalog({ initial }: { initial: PropertyDTO[] }) {
             </p>
 
             <p className="mt-2 text-slate-500">
-              Écrivez-nous sur WhatsApp, nous avons souvent des nouveautés non
-              publiées.
+              Écrivez-nous sur WhatsApp, nous avons souvent des
+              nouveautés non publiées.
             </p>
 
             <a
               href={WHATSAPP_LINK(
-                "Bonjour, je cherche un logement avec ces critères : " + query
+                "Bonjour, je cherche un logement avec ces critères : " +
+                  query
               )}
               target="_blank"
               rel="noreferrer"
               className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-6 py-3 font-bold text-white"
             >
-              <MessageCircle size={18} /> Demander sur WhatsApp
+              <MessageCircle size={18} />
+              Demander sur WhatsApp
             </a>
           </div>
         ) : (
@@ -378,7 +404,7 @@ export function PropertyCard({
           <img
             src={img}
             alt={p.title}
-            className="prop-img h-full w-full object-cover"
+            className="prop-img h-full w-full object-contain"
             loading="lazy"
           />
         ) : (
@@ -400,15 +426,21 @@ export function PropertyCard({
         </div>
 
         <div className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-black/55 backdrop-blur px-2.5 py-1.5 text-[12px] font-bold text-white">
-          <Star size={13} className="fill-amber-300 text-amber-300" />
+          <Star
+            size={13}
+            className="fill-amber-300 text-amber-300"
+          />
+
           {ratingDisplay(p.rating)}
+
           <span className="font-medium opacity-80">
             ({p.reviewsCount})
           </span>
         </div>
 
         <div className="absolute bottom-3 left-3 inline-flex items-center gap-1.5 rounded-full bg-[#062e32]/85 backdrop-blur px-3 py-1.5 text-[12px] font-bold text-white">
-          <MapPin size={13} /> {p.neighborhood}
+          <MapPin size={13} />
+          {p.neighborhood}
         </div>
 
         {p.images && p.images.length > 1 && (
@@ -432,21 +464,37 @@ export function PropertyCard({
 
         <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[13px] font-medium text-slate-600">
           <span className="inline-flex items-center gap-1.5">
-            <BedDouble size={15} className="text-slate-400" /> {p.bedrooms} ch.
+            <BedDouble
+              size={15}
+              className="text-slate-400"
+            />
+            {p.bedrooms} ch.
           </span>
 
           <span className="inline-flex items-center gap-1.5">
-            <Bath size={15} className="text-slate-400" /> {p.bathrooms} SDB
+            <Bath
+              size={15}
+              className="text-slate-400"
+            />
+            {p.bathrooms} SDB
           </span>
 
           {p.surfaceM2 ? (
             <span className="inline-flex items-center gap-1.5">
-              <Ruler size={15} className="text-slate-400" /> {p.surfaceM2} m²
+              <Ruler
+                size={15}
+                className="text-slate-400"
+              />
+              {p.surfaceM2} m²
             </span>
           ) : null}
 
           <span className="inline-flex items-center gap-1.5">
-            <Users size={15} className="text-slate-400" /> {p.maxGuests} pers.
+            <Users
+              size={15}
+              className="text-slate-400"
+            />
+            {p.maxGuests} pers.
           </span>
         </div>
 
@@ -466,6 +514,7 @@ export function PropertyCard({
             {p.pricePerNight ? (
               <p className="text-[15px] font-extrabold text-slate-900">
                 {formatFCFA(p.pricePerNight)}
+
                 <span className="text-[13px] font-medium text-slate-500">
                   {" "}
                   / nuit
@@ -482,6 +531,7 @@ export function PropertyCard({
                 }`}
               >
                 {formatFCFA(p.pricePerMonth)}
+
                 <span className="text-[13px] font-medium text-slate-500">
                   {" "}
                   / mois
@@ -505,7 +555,9 @@ export function PropertyCard({
 
           <a
             href={WHATSAPP_LINK(
-              `Bonjour PAVA LOGEMENT, je suis intéressé par : ${p.title} (${p.neighborhood}) — ${formatFCFA(
+              `Bonjour PAVA LOGEMENT, je suis intéressé par : ${
+                p.title
+              } (${p.neighborhood}) — ${formatFCFA(
                 p.pricePerMonth || p.pricePerNight
               )}. Est-il disponible ?`
             )}
@@ -513,7 +565,8 @@ export function PropertyCard({
             rel="noreferrer"
             className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-[#25D366] px-4 py-2.5 text-[14px] font-bold text-white hover:brightness-95 transition"
           >
-            <MessageCircle size={16} /> WhatsApp
+            <MessageCircle size={16} />
+            WhatsApp
           </a>
         </div>
       </div>
@@ -539,18 +592,21 @@ function Gallery({
   }
 
   return (
-    <div className="relative h-[300px] sm:h-[360px] bg-slate-900 overflow-hidden">
+    <div className="relative h-[300px] sm:h-[360px] bg-slate-100 overflow-hidden">
       <img
         src={images[idx]}
         alt={title}
-        className="h-full w-full object-cover"
+        className="h-full w-full object-contain"
       />
 
       {images.length > 1 && (
         <>
           <button
             onClick={() =>
-              setIdx((idx - 1 + images.length) % images.length)
+              setIdx(
+                (idx - 1 + images.length) %
+                  images.length
+              )
             }
             className="absolute left-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-white/90 hover:bg-white"
           >
@@ -558,7 +614,9 @@ function Gallery({
           </button>
 
           <button
-            onClick={() => setIdx((idx + 1) % images.length)}
+            onClick={() =>
+              setIdx((idx + 1) % images.length)
+            }
             className="absolute right-3 top-1/2 -translate-y-1/2 grid h-10 w-10 place-items-center rounded-full bg-white/90 hover:bg-white"
           >
             <ChevronRight size={20} />
@@ -627,13 +685,20 @@ export function PropertyModal({
 
     const a = new Date(form.checkIn).getTime();
     const b = new Date(form.checkOut).getTime();
-    const d = Math.round((b - a) / 86400000);
+
+    const d = Math.round(
+      (b - a) / 86400000
+    );
 
     return d > 0 ? d : 0;
   }, [form.checkIn, form.checkOut]);
 
   const estimated = useMemo(() => {
-    if (tab === "court" && p.pricePerNight && nights > 0) {
+    if (
+      tab === "court" &&
+      p.pricePerNight &&
+      nights > 0
+    ) {
       return p.pricePerNight * nights;
     }
 
@@ -644,30 +709,37 @@ export function PropertyModal({
     return null;
   }, [tab, nights, p]);
 
-  const submit = async (e: React.FormEvent) => {
+  const submit = async (
+    e: React.FormEvent
+  ) => {
     e.preventDefault();
     setSending(true);
 
     try {
-      const res = await fetch("/api/bookings", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          propertyId: p.id,
-          propertyTitle: p.title,
-          fullName: form.fullName,
-          phone: form.phone,
-          email: form.email,
-          checkIn: form.checkIn || null,
-          checkOut: form.checkOut || null,
-          guests: form.guests,
-          stayType: tab,
-          message: form.message,
-          totalEstimated: estimated,
-        }),
-      });
+      const res = await fetch(
+        "/api/bookings",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            propertyId: p.id,
+            propertyTitle: p.title,
+            fullName: form.fullName,
+            phone: form.phone,
+            email: form.email,
+            checkIn:
+              form.checkIn || null,
+            checkOut:
+              form.checkOut || null,
+            guests: form.guests,
+            stayType: tab,
+            message: form.message,
+            totalEstimated: estimated,
+          }),
+        }
+      );
 
       if (res.ok) {
         setDone(true);
@@ -681,9 +753,13 @@ export function PropertyModal({
     }
   };
 
-  const waMsg = `Bonjour PAVA LOGEMENT, je veux réserver : ${p.title} (${p.neighborhood}). Nom: ${
+  const waMsg = `Bonjour PAVA LOGEMENT, je veux réserver : ${
+    p.title
+  } (${p.neighborhood}). Nom: ${
     form.fullName || "..."
-  } — Arrivée: ${form.checkIn || "..."} Départ: ${
+  } — Arrivée: ${
+    form.checkIn || "..."
+  } Départ: ${
     form.checkOut || "..."
   } — ${form.guests} pers. Merci de me confirmer la disponibilité.`;
 
@@ -702,7 +778,10 @@ export function PropertyModal({
           <X size={20} />
         </button>
 
-        <Gallery images={p.images || []} title={p.title} />
+        <Gallery
+          images={p.images || []}
+          title={p.title}
+        />
 
         <div className="grid md:grid-cols-[1.5fr_1fr] gap-0">
           <div className="p-6 sm:p-8">
@@ -720,7 +799,8 @@ export function PropertyModal({
                   size={12}
                   className="fill-amber-300 text-amber-300"
                 />{" "}
-                {ratingDisplay(p.rating)} · {p.reviewsCount} avis
+                {ratingDisplay(p.rating)} ·{" "}
+                {p.reviewsCount} avis
               </span>
             </div>
 
@@ -729,7 +809,8 @@ export function PropertyModal({
             </h3>
 
             <p className="mt-1.5 flex items-center gap-1.5 text-[14px] font-semibold text-slate-500">
-              <MapPin size={15} /> {p.address || p.neighborhood}, Dakar
+              <MapPin size={15} />{" "}
+              {p.address || p.neighborhood}, Dakar
             </p>
 
             <div className="mt-4 grid grid-cols-4 gap-2 text-center">
@@ -746,7 +827,9 @@ export function PropertyModal({
                 },
                 {
                   icon: Ruler,
-                  v: p.surfaceM2 ? `${p.surfaceM2}m²` : "—",
+                  v: p.surfaceM2
+                    ? `${p.surfaceM2}m²`
+                    : "—",
                   l: "Surface",
                 },
                 {
@@ -763,9 +846,11 @@ export function PropertyModal({
                     size={18}
                     className="mx-auto text-[#006b75]"
                   />
+
                   <p className="mt-1 font-extrabold text-[15px]">
                     {s.v}
                   </p>
+
                   <p className="text-[12px] text-slate-500 font-medium">
                     {s.l}
                   </p>
@@ -806,11 +891,15 @@ export function PropertyModal({
               </p>
 
               <ul className="mt-2.5 space-y-1.5 leading-relaxed">
-                <li>✓ Visite photo/vidéo WhatsApp avant paiement</li>
                 <li>
-                  ✓ Contrat + reçu Wave / Orange Money à chaque
-                  versement
+                  ✓ Visite photo/vidéo WhatsApp avant paiement
                 </li>
+
+                <li>
+                  ✓ Contrat + reçu Wave / Orange Money à
+                  chaque versement
+                </li>
+
                 <li>
                   ✓ Remise des clés en main propre + état des
                   lieux
@@ -850,10 +939,13 @@ export function PropertyModal({
               </div>
 
               <div className="mt-4">
-                {tab === "court" && p.pricePerNight ? (
+                {tab === "court" &&
+                p.pricePerNight ? (
                   <p>
                     <span className="text-[24px] font-extrabold">
-                      {formatFCFA(p.pricePerNight)}
+                      {formatFCFA(
+                        p.pricePerNight
+                      )}
                     </span>{" "}
                     <span className="text-slate-500 font-medium">
                       / nuit
@@ -862,7 +954,9 @@ export function PropertyModal({
                 ) : p.pricePerMonth ? (
                   <p>
                     <span className="text-[24px] font-extrabold">
-                      {formatFCFA(p.pricePerMonth)}
+                      {formatFCFA(
+                        p.pricePerMonth
+                      )}
                     </span>{" "}
                     <span className="text-slate-500 font-medium">
                       / mois
@@ -876,7 +970,8 @@ export function PropertyModal({
 
                 {estimated ? (
                   <p className="mt-2 rounded-xl bg-orange-50 border border-orange-100 px-3 py-2 text-[13px] font-bold text-[#9a3f0a]">
-                    Estimation : {formatFCFA(estimated)}{" "}
+                    Estimation :{" "}
+                    {formatFCFA(estimated)}{" "}
                     {tab === "court"
                       ? `· ${nights} nuit(s)`
                       : "· 1 mois"}
@@ -895,7 +990,8 @@ export function PropertyModal({
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        fullName: e.target.value,
+                        fullName:
+                          e.target.value,
                       })
                     }
                     placeholder="Nom complet *"
@@ -909,7 +1005,8 @@ export function PropertyModal({
                       onChange={(e) =>
                         setForm({
                           ...form,
-                          phone: e.target.value,
+                          phone:
+                            e.target.value,
                         })
                       }
                       placeholder="Téléphone *"
@@ -924,7 +1021,9 @@ export function PropertyModal({
                       onChange={(e) =>
                         setForm({
                           ...form,
-                          guests: Number(e.target.value),
+                          guests: Number(
+                            e.target.value
+                          ),
                         })
                       }
                       placeholder="Voyageurs"
@@ -935,7 +1034,8 @@ export function PropertyModal({
                   <div className="grid grid-cols-2 gap-2.5">
                     <label className="block">
                       <span className="text-[12px] font-bold text-slate-500 flex items-center gap-1">
-                        <CalendarDays size={12} /> Arrivée
+                        <CalendarDays size={12} />
+                        Arrivée
                       </span>
 
                       <input
@@ -944,7 +1044,8 @@ export function PropertyModal({
                         onChange={(e) =>
                           setForm({
                             ...form,
-                            checkIn: e.target.value,
+                            checkIn:
+                              e.target.value,
                           })
                         }
                         className="mt-1 w-full rounded-xl border bg-white px-3 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
@@ -962,7 +1063,8 @@ export function PropertyModal({
                         onChange={(e) =>
                           setForm({
                             ...form,
-                            checkOut: e.target.value,
+                            checkOut:
+                              e.target.value,
                           })
                         }
                         className="mt-1 w-full rounded-xl border bg-white px-3 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
@@ -975,7 +1077,8 @@ export function PropertyModal({
                     onChange={(e) =>
                       setForm({
                         ...form,
-                        message: e.target.value,
+                        message:
+                          e.target.value,
                       })
                     }
                     placeholder="Message (optionnel) : motif du séjour, heure d'arrivée…"
@@ -998,12 +1101,14 @@ export function PropertyModal({
                     rel="noreferrer"
                     className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#25D366] px-4 py-3 font-extrabold text-white hover:brightness-95"
                   >
-                    <MessageCircle size={17} /> Confirmer sur WhatsApp
+                    <MessageCircle size={17} />
+                    Confirmer sur WhatsApp
                   </a>
 
                   <p className="text-center text-[12px] text-slate-500">
-                    Réponse moyenne en <strong>5 minutes</strong>{" "}
-                    · Sans engagement
+                    Réponse moyenne en{" "}
+                    <strong>5 minutes</strong> · Sans
+                    engagement
                   </p>
                 </form>
               ) : (
@@ -1015,9 +1120,9 @@ export function PropertyModal({
                   </p>
 
                   <p className="mt-1 text-[13px] text-emerald-800">
-                    Notre équipe vous appelle dans quelques
-                    minutes pour confirmer la disponibilité et la
-                    remise des clés.
+                    Notre équipe vous appelle dans
+                    quelques minutes pour confirmer la
+                    disponibilité et la remise des clés.
                   </p>
 
                   <a
@@ -1026,7 +1131,8 @@ export function PropertyModal({
                     rel="noreferrer"
                     className="mt-3 inline-flex items-center gap-2 rounded-full bg-[#25D366] px-5 py-2.5 text-[14px] font-bold text-white"
                   >
-                    <Phone size={15} /> Accélérer sur WhatsApp
+                    <Phone size={15} />
+                    Accélérer sur WhatsApp
                   </a>
                 </div>
               )}
@@ -1038,8 +1144,8 @@ export function PropertyModal({
               </p>
 
               <p className="mt-1 text-slate-500">
-                Acompte 30% pour bloquer les dates, solde à la
-                remise des clés avec reçu.
+                Acompte 30% pour bloquer les dates,
+                solde à la remise des clés avec reçu.
               </p>
             </div>
           </div>
