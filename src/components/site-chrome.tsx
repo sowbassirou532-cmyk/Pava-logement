@@ -1,3 +1,4 @@
+```tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -213,7 +214,8 @@ export function Navbar() {
         <button
           onClick={() => setOpen(!open)}
           className="lg:hidden grid h-11 w-11 place-items-center rounded-xl bg-slate-100"
-          aria-label="Menu"
+          aria-label={open ? "Fermer le menu" : "Ouvrir le menu"}
+          aria-expanded={open}
         >
           {open ? <X /> : <Menu />}
         </button>
@@ -470,39 +472,20 @@ export function Footer() {
 }
 
 export function WhatsAppFloat() {
-  const [show, setShow] = useState(false);
-
-  useEffect(() => {
-    const t = setTimeout(() => setShow(true), 2500);
-
-    return () => clearTimeout(t);
-  }, []);
-
-  if (!show) return null;
-
   return (
-    <div className="fixed bottom-5 right-5 z-50 flex flex-col items-end gap-3">
-      <div className="max-w-[240px] rounded-2xl rounded-br-md bg-white p-3.5 text-[13px] shadow-2xl border animate-fade-up">
-        <p className="font-bold text-slate-900">
-          Une question sur un logement ?
-        </p>
-
-        <p className="mt-1 text-slate-600">
-          Écrivez-nous directement sur WhatsApp.
-        </p>
-      </div>
-
+    <div className="fixed bottom-4 right-3 sm:bottom-5 sm:right-5 z-40">
       <a
         href={WHATSAPP_LINK(
           "Bonjour PAVA LOGEMENT, je cherche un logement à Dakar."
         )}
         target="_blank"
-        rel="noreferrer"
-        className="group grid h-14 w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-[0_12px_30px_rgba(37,211,102,0.5)] hover:scale-105 transition"
-        aria-label="WhatsApp"
+        rel="noopener noreferrer"
+        className="grid h-12 w-12 sm:h-14 sm:w-14 place-items-center rounded-full bg-[#25D366] text-white shadow-lg hover:scale-105 transition-transform focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-700 focus-visible:ring-offset-2"
+        aria-label="Contacter PAVA LOGEMENT sur WhatsApp"
       >
-        <MessageCircle size={26} />
+        <MessageCircle size={24} />
       </a>
     </div>
   );
 }
+```
