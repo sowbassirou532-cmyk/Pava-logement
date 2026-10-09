@@ -525,7 +525,7 @@ export function PropertyCard({
             </span>
           ) : null}
 
-          {p.maxGuests ? (
+          {p.maxGuests && p.stayType !== "long" ? (
             <span className="inline-flex items-center gap-1.5">
               <Users
                 size={15}
@@ -775,8 +775,9 @@ export function PropertyModal({
           phone: form.phone,
           email: form.email,
           checkIn: form.checkIn || null,
-          checkOut: form.checkOut || null,
-          guests: form.guests,
+          checkOut:
+            tab === "court" ? form.checkOut || null : null,
+          guests: tab === "court" ? form.guests : 1,
           stayType: tab,
           message: form.message,
           totalEstimated: estimated,
@@ -801,15 +802,10 @@ export function PropertyModal({
     }
   };
 
-  const waMsg = `Bonjour PAVA LOGEMENT, je suis intéressé par le logement ${
-    p.title
-  } à ${p.neighborhood}. Nom : ${
-    form.fullName || "..."
-  }. Arrivée : ${
-    form.checkIn || "..."
-  }. Départ : ${
-    form.checkOut || "..."
-  }. ${form.guests} pers. Pouvez-vous me confirmer les informations et la disponibilité ?`;
+  const waMsg =
+    tab === "long"
+      ? `Bonjour PAVA LOGEMENT, je souhaite louer le logement ${p.title} à ${p.neighborhood} en location mensuelle. Nom du locataire : ${form.fullName || "..."}. Date d’entrée souhaitée : ${form.checkIn || "à préciser"}. Pouvez-vous me confirmer les conditions de location et la disponibilité ?`
+      : `Bonjour PAVA LOGEMENT, je suis intéressé par le logement ${p.title} à ${p.neighborhood}. Nom : ${form.fullName || "..."}. Arrivée : ${form.checkIn || "..."}. Départ : ${form.checkOut || "..."}. ${form.guests} voyageur(s). Pouvez-vous me confirmer les informations et la disponibilité ?`;
 
   const showTabs = hasCourtPrice || hasLongPrice;
 
@@ -875,7 +871,11 @@ export function PropertyModal({
               {p.address || p.neighborhood}, Dakar
             </p>
 
-            <div className="mt-4 grid grid-cols-4 gap-2 text-center">
+            <div
+              className={`mt-4 grid ${
+                tab === "court" ? "grid-cols-4" : "grid-cols-3"
+              } gap-2 text-center`}
+            >
               {[
                 {
                   icon: BedDouble,
@@ -900,13 +900,17 @@ export function PropertyModal({
                     : "—",
                   l: "Surface",
                 },
-                {
-                  icon: Users,
-                  v: p.maxGuests
-                    ? `${p.maxGuests}`
-                    : "—",
-                  l: "Voyageurs",
-                },
+                ...(tab === "court"
+                  ? [
+                      {
+                        icon: Users,
+                        v: p.maxGuests
+                          ? `${p.maxGuests}`
+                          : "—",
+                        l: "Voyageurs",
+                      },
+                    ]
+                  : []),
               ].map((s, i) => (
                 <div
                   key={i}
@@ -992,6 +996,7 @@ export function PropertyModal({
                 >
                   {hasCourtPrice ? (
                     <button
+                      type="button"
                       onClick={() => setTab("court")}
                       className={`rounded-lg py-2.5 transition ${
                         tab === "court"
@@ -1005,6 +1010,7 @@ export function PropertyModal({
 
                   {hasLongPrice ? (
                     <button
+                      type="button"
                       onClick={() => setTab("long")}
                       className={`rounded-lg py-2.5 transition ${
                         tab === "long"
@@ -1065,6 +1071,12 @@ export function PropertyModal({
                   onSubmit={submit}
                   className="mt-4 space-y-2.5"
                 >
+                  <p className="text-[13px] font-extrabold text-slate-800">
+                    {tab === "long"
+                      ? "Informations du locataire"
+                      : "Informations du voyageur"}
+                  </p>
+
                   <input
                     required
                     value={form.fullName}
@@ -1074,13 +1086,24 @@ export function PropertyModal({
                         fullName: e.target.value,
                       })
                     }
-                    placeholder="Nom complet *"
+                    placeholder={
+                      tab === "long"
+                        ? "Nom complet du locataire *"
+                        : "Nom complet *"
+                    }
                     className="w-full rounded-xl border bg-white px-3.5 py-2.5 text-[14px] outline-none focus:border-[#006b75]"
                   />
 
-                  <div className="grid grid-cols-2 gap-2.5">
+                  <div
+                    className={`grid ${
+                      tab === "court"
+                        ? "grid-cols-2"
+                        : "grid-cols-1"
+                    } gap-2.5`}
+                  >
                     <input
                       required
+                      type="tel"
                       value={form.phone}
                       onChange={(e) =>
                         setForm({
@@ -1089,66 +1112,77 @@ export function PropertyModal({
                         })
                       }
                       placeholder="Téléphone *"
-                      className="w-full rounded-xl border bg-white px-3.5 py-2.5 text-[14px] outline-none focus:border-[#006b75]"
+                      className="w-full min-w-0 rounded-xl border bg-white px-3.5 py-2.5 text-[14px] outline-none focus:border-[#006b75]"
                     />
 
-                    <input
-                      type="number"
-                      min={1}
-                      max={12}
-                      value={form.guests}
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          guests: Number(
-                            e.target.value
-                          ),
-                        })
-                      }
-                      placeholder="Voyageurs"
-                      className="w-full rounded-xl border bg-white px-3.5 py-2.5 text-[14px] outline-none focus:border-[#006b75]"
-                    />
+                    {tab === "court" && (
+                      <input
+                        type="number"
+                        min={1}
+                        max={12}
+                        value={form.guests}
+                        onChange={(e) =>
+                          setForm({
+                            ...form,
+                            guests: Number(e.target.value),
+                          })
+                        }
+                        placeholder="Voyageurs"
+                        aria-label="Nombre de voyageurs"
+                        className="w-full min-w-0 rounded-xl border bg-white px-3.5 py-2.5 text-[14px] outline-none focus:border-[#006b75]"
+                      />
+                    )}
                   </div>
 
-                  <div className="grid grid-cols-2 gap-2.5">
-                    <label className="block">
+                  <div
+                    className={`grid ${
+                      tab === "court"
+                        ? "grid-cols-2"
+                        : "grid-cols-1"
+                    } gap-2.5`}
+                  >
+                    <label className="block min-w-0">
                       <span className="text-[12px] font-bold text-slate-500 flex items-center gap-1">
                         <CalendarDays size={12} />
-                        Arrivée
+                        {tab === "long"
+                          ? "Date d’entrée souhaitée"
+                          : "Date d’arrivée"}
                       </span>
 
                       <input
+                        required={tab === "long"}
                         type="date"
                         value={form.checkIn}
                         onChange={(e) =>
                           setForm({
                             ...form,
-                            checkIn:
-                              e.target.value,
+                            checkIn: e.target.value,
                           })
                         }
-                        className="mt-1 w-full rounded-xl border bg-white px-3 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
+                        className="mt-1 w-full min-w-0 rounded-xl border bg-white px-3 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
                       />
                     </label>
 
-                    <label className="block">
-                      <span className="text-[12px] font-bold text-slate-500">
-                        Départ
-                      </span>
+                    {tab === "court" && (
+                      <label className="block min-w-0">
+                        <span className="text-[12px] font-bold text-slate-500">
+                          Départ
+                        </span>
 
-                      <input
-                        type="date"
-                        value={form.checkOut}
-                        onChange={(e) =>
-                          setForm({
-                            ...form,
-                            checkOut:
-                              e.target.value,
-                          })
-                        }
-                        className="mt-1 w-full rounded-xl border bg-white px-3 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
-                      />
-                    </label>
+                        <input
+                          type="date"
+                          min={form.checkIn || undefined}
+                          value={form.checkOut}
+                          onChange={(e) =>
+                            setForm({
+                              ...form,
+                              checkOut: e.target.value,
+                            })
+                          }
+                          className="mt-1 w-full min-w-0 rounded-xl border bg-white px-3 py-2.5 text-[13px] outline-none focus:border-[#006b75]"
+                        />
+                      </label>
+                    )}
                   </div>
 
                   <textarea
@@ -1159,17 +1193,24 @@ export function PropertyModal({
                         message: e.target.value,
                       })
                     }
-                    placeholder="Message (optionnel) : motif du séjour, heure d'arrivée…"
+                    placeholder={
+                      tab === "long"
+                        ? "Message (optionnel) : durée souhaitée, questions sur le bail…"
+                        : "Message (optionnel) : motif du séjour, heure d'arrivée…"
+                    }
                     rows={3}
                     className="w-full rounded-xl border bg-white px-3.5 py-2.5 text-[14px] outline-none focus:border-[#006b75]"
                   />
 
                   <button
+                    type="submit"
                     disabled={sending}
                     className="w-full rounded-xl bg-[#E2681B] px-4 py-3 font-extrabold text-white hover:bg-[#c65a14] transition disabled:opacity-60"
                   >
                     {sending
                       ? "Envoi…"
+                      : tab === "long"
+                      ? "Envoyer ma demande de location"
                       : "Envoyer ma demande"}
                   </button>
 
