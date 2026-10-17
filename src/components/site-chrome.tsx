@@ -13,7 +13,7 @@ import {
   Clock,
   Home,
 } from "lucide-react";
-import { siteConfig } from "@/lib/site";
+import { CONTACT, WHATSAPP_LINK } from "@/lib/site";
 
 function TikTokIcon({ size = 20 }: { size?: number }) {
   return (
@@ -105,18 +105,18 @@ export function TopBar() {
       <div className="mx-auto flex max-w-7xl flex-wrap items-center justify-between gap-3 px-4 py-2 lg:px-8">
         <div className="flex flex-wrap items-center gap-5">
           <a
-            href={`tel:${siteConfig.phone}`}
+            href={`tel:${CONTACT.phones[0].replace(/\s/g, "")}`}
             className="flex items-center gap-2 hover:text-emerald-200"
           >
             <Phone size={15} />
-            <span>{siteConfig.phone}</span>
+            <span>{CONTACT.phones[0]}</span>
           </a>
           <a
-            href={`mailto:${siteConfig.email}`}
+            href={`mailto:${CONTACT.emails[0]}`}
             className="flex items-center gap-2 hover:text-emerald-200"
           >
             <Mail size={15} />
-            <span>{siteConfig.email}</span>
+            <span>{CONTACT.emails[0]}</span>
           </a>
         </div>
         <div className="flex items-center gap-2">
@@ -157,7 +157,7 @@ export function Navbar() {
 
         <div className="hidden md:block">
           <a
-            href={`https://wa.me/${siteConfig.whatsapp.replace(/\D/g, "")}`}
+            href={WHATSAPP_LINK("Bonjour, je souhaite contacter Pava Logement.")}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-2 rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-emerald-800"
@@ -192,7 +192,7 @@ export function Navbar() {
               </Link>
             ))}
             <a
-              href={`https://wa.me/${siteConfig.whatsapp.replace(/\D/g, "")}`}
+              href={WHATSAPP_LINK("Bonjour, je souhaite contacter Pava Logement.")}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-2 inline-flex items-center justify-center gap-2 rounded-xl bg-emerald-700 px-4 py-3 text-sm font-semibold text-white"
@@ -228,7 +228,7 @@ export function Footer() {
     },
     {
       name: "LinkedIn",
-      href: "https://www.linkedin.com/company/146758061/",
+      href: "https://www.linkedin.com/company/146758061",
       icon: <LinkedInIcon size={20} />,
     },
   ];
@@ -295,29 +295,30 @@ export function Footer() {
           <ul className="space-y-4 text-sm">
             <li className="flex items-start gap-3">
               <MapPin size={18} className="mt-0.5 shrink-0 text-emerald-400" />
-              <span>Médina, Rue 6 x Angle 17, Dakar, Sénégal</span>
+              <span>{CONTACT.address}</span>
             </li>
-            <li className="flex items-center gap-3">
-              <Phone size={18} className="shrink-0 text-emerald-400" />
-              <a href="tel:+221782931667" className="hover:text-emerald-400">
-                +221 78 293 16 67
-              </a>
-            </li>
-            <li className="flex items-center gap-3">
-              <Phone size={18} className="shrink-0 text-emerald-400" />
-              <a href="tel:+221763580242" className="hover:text-emerald-400">
-                +221 76 358 02 42
-              </a>
-            </li>
-            <li className="flex items-center gap-3">
-              <Mail size={18} className="shrink-0 text-emerald-400" />
-              <a
-                href={`mailto:${siteConfig.email}`}
-                className="break-all hover:text-emerald-400"
-              >
-                {siteConfig.email}
-              </a>
-            </li>
+            {CONTACT.phones.map((phone) => (
+              <li key={phone} className="flex items-center gap-3">
+                <Phone size={18} className="shrink-0 text-emerald-400" />
+                <a
+                  href={`tel:${phone.replace(/\s/g, "")}`}
+                  className="hover:text-emerald-400"
+                >
+                  {phone}
+                </a>
+              </li>
+            ))}
+            {CONTACT.emails.map((email) => (
+              <li key={email} className="flex items-center gap-3">
+                <Mail size={18} className="shrink-0 text-emerald-400" />
+                <a
+                  href={`mailto:${email}`}
+                  className="break-all hover:text-emerald-400"
+                >
+                  {email}
+                </a>
+              </li>
+            ))}
           </ul>
         </div>
 
@@ -339,7 +340,7 @@ export function Footer() {
 
       <div className="border-t border-slate-800">
         <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-5 text-xs text-slate-500 sm:flex-row sm:items-center sm:justify-between lg:px-8">
-          <p>© {currentYear} Pava Logement. Tous droits réservés.</p>
+          <p>© {currentYear} {CONTACT.brand}. Tous droits réservés.</p>
           <p>Dakar, Sénégal</p>
         </div>
       </div>
@@ -350,7 +351,7 @@ export function Footer() {
 export function WhatsAppFloat() {
   return (
     <a
-      href={`https://wa.me/${siteConfig.whatsapp.replace(/\D/g, "")}`}
+      href={WHATSAPP_LINK("Bonjour, je souhaite contacter Pava Logement.")}
       target="_blank"
       rel="noopener noreferrer"
       aria-label="Contacter Pava Logement sur WhatsApp"
