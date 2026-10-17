@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Clock,
   Home,
+  Linkedin,
 } from "lucide-react";
 
 function TikTokIcon({ size = 20 }: { size?: number }) {
@@ -306,6 +307,17 @@ export function Footer() {
               className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-[#1877F2] transition"
             >
               <FacebookIcon size={19} />
+            </a>
+
+            <a
+              href="https://www.linkedin.com/company/146758061/"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="LinkedIn PAVA LOGEMENT"
+              title="LinkedIn"
+              className="grid h-10 w-10 shrink-0 place-items-center rounded-full bg-white/10 text-white hover:bg-[#0A66C2] transition"
+            >
+              <Linkedin size={19} />
             </a>
 
             <a
