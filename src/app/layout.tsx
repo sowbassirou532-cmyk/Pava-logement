@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 import "./globals.css";
 
-const SITE_URL = "https://pava-logement-21gy-eight.vercel.app";
+const SITE_URL = "https://pavalogementsn.com";
 
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
