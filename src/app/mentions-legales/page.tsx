@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const SITE_URL =
-  "https://pava-logement-21gy-eight.vercel.app";
+  "https://www.pavalogementsn.com";
 
 export default function MentionsLegalesPage() {
   return (
