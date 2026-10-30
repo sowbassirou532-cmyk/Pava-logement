@@ -590,11 +590,19 @@ export function GestionLocative() {
                       "Wakam",
                       "Mame El Hadji",
                       "Autre",
-                    ].map((item) => (
-                      <option key={item}>
-                        {item}
-                      </option>
-                    ))}
+                    ]
+                      .sort((a, b) =>
+                        a === "Autre"
+                          ? 1
+                          : b === "Autre"
+                          ? -1
+                          : a.localeCompare(b, "fr")
+                      )
+                      .map((item) => (
+                        <option key={item}>
+                          {item}
+                        </option>
+                      ))}
                   </select>
                 </div>
 
