@@ -585,7 +585,7 @@ export function GestionLocative() {
                       "Keur Massar",
                       "Liberté 6",
                       "Mbour",
-                      "Mame El Hadji",
+
                       "Médina",
                       "Mermoz",
                       "Ngor",
