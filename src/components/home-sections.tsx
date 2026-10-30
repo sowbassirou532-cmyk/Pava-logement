@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { upload } from "@vercel/blob/client";
-import { WHATSAPP_LINK } from "@/lib/site";
+import { WHATSAPP_LINK, QUARTIERS } from "@/lib/site";
 import {
   Building2,
   Camera,
@@ -577,34 +577,7 @@ export function GestionLocative() {
                     }
                     className="rounded-xl border border-white/15 bg-white/10 px-4 py-3 text-[14px] outline-none focus:border-[#E9B44C] [&>option]:text-slate-900"
                   >
-                    {[
-                      "Almadies",
-                      "Fann - Point E - Amitié",
-                      "Grand Yoff",
-                      "Hann Maristes",
-                      "Keur Massar",
-                      "Liberté 6",
-                      "Mbour",
-
-                      "Médina",
-                      "Mermoz",
-                      "Ngor",
-                      "Ouest Foire",
-                      "Ouakam",
-                      "Parcelles Assainies",
-                      "Guédiawaye",
-                      "Malika",
-                      "Pikine",
-                      "Rufisque",
-                      "Thiaroye",
-                      "Yeumbeul",
-                      "Plateau",
-                      "Sacré-Cœur",
-                      "Saly",
-                      "Wakam",
-                      "Yoff",
-                      "Autre",
-                    ]
+                    {[...QUARTIERS, "Autre"]
                       .sort((a, b) =>
                         a === "Autre"
                           ? 1
