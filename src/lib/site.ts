@@ -34,16 +34,31 @@ export const STAY_LABELS: Record<string, string> = {
 };
 
 export const QUARTIERS = [
-  "Médina",
-  "Plateau",
-  "Mermoz",
   "Almadies",
-  "Ngor",
-  "Ouakam",
-  "Yoff",
-  "Sacré-Cœur",
+  "Fann - Point E - Amitié",
+  "Grand Yoff",
+  "Guédiawaye",
+  "Hann Maristes",
   "Keur Massar",
-];
+  "Liberté 6",
+  "Malika",
+  "Mbour",
+  "Médina",
+  "Mermoz",
+  "Ngor",
+  "Ouest Foire",
+  "Ouakam",
+  "Parcelles Assainies",
+  "Pikine",
+  "Plateau",
+  "Rufisque",
+  "Sacré-Cœur",
+  "Saly",
+  "Thiaroye",
+  "Wakam",
+  "Yeumbeul",
+  "Yoff",
+].sort((a, b) => a.localeCompare(b, "fr"));
 
 export type PropertyDTO = {
   id: string;
